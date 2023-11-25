@@ -3,6 +3,7 @@ package com.example.Shop_task1.data;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.UUID;
 
@@ -12,7 +13,7 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID uuid;
+    private UUID id;
 
     private String title;
 
@@ -23,10 +24,10 @@ public class Product {
     private Double price;
 
     private int count;
-
-    private Date exchangeCount;
-
-    private Date createDate;
+    @Column(name = "exchange_count")
+    private LocalDate exchangeCount;
+    @Column(name = "create_date")
+    private LocalDate createDate;
 
 
 }
