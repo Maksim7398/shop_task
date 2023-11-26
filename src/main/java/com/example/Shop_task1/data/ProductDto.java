@@ -1,8 +1,7 @@
 package com.example.Shop_task1.data;
 
-import lombok.Data;
 
-import java.time.LocalDate;
+import lombok.Data;
 
 @Data
 public class ProductDto {
@@ -17,9 +16,6 @@ public class ProductDto {
 
     private int count;
 
-    private LocalDate exchangeCount;
-
-    private LocalDate createDate;
 
 
 }

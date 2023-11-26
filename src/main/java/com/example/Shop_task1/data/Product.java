@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -24,8 +27,10 @@ public class Product {
     private Double price;
     @Digits(integer = 5,fraction = 0)
     private int count;
+    @UpdateTimestamp
     @Column(name = "exchange_count")
     private LocalDate exchangeCount;
+    @CreationTimestamp
     @Column(name = "create_date")
     private LocalDate createDate;
 
