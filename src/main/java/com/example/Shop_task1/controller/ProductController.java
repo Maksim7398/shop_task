@@ -1,19 +1,14 @@
 package com.example.Shop_task1.controller;
 
 
-import com.example.Shop_task1.data.Categories;
 import com.example.Shop_task1.data.Product;
 import com.example.Shop_task1.data.ProductDto;
 //import com.example.Shop_task1.mapper.ProductMapper;
 import com.example.Shop_task1.mapper.ProductMapper;
 import com.example.Shop_task1.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.time.LocalDate;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,11 +20,27 @@ public class ProductController {
     private final ProductMapper productMapper;
 
 
-    @GetMapping("/create_product")
-    public void getProduct(@RequestBody ProductDto productDto){
-        Product product = productMapper.createProd(productDto);
+    @PostMapping("/create_product")
+    public void createProduct(@Validated @RequestBody ProductDto productDto){
+        Product product = productMapper.createProductRequest(productDto);
         service.save(product);
     }
+    @GetMapping("/{id}")
+    public Product getProduct(@PathVariable String id){
+        return service.getProductById(id);
+    }
+
+    @GetMapping("/delete/{id}")
+    public void deleteByID(@PathVariable String id){
+        service.deleteProdById(id);
+    }
+    @PutMapping("/update/{id}")
+    public void updateProduct(@RequestBody ProductDto productDto,@PathVariable String id){
+        Product product = productMapper.updateProductRequest(productDto);
+        service.updateProduct(id,product);
+    }
+
+
 
 
 }

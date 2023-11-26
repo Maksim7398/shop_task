@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Data
 public class ProductDto {
+
     private String title;
 
     private String description;
@@ -19,4 +20,6 @@ public class ProductDto {
     private LocalDate exchangeCount;
 
     private LocalDate createDate;
+
+
 }
