@@ -1,4 +1,6 @@
 server:
+  servlet:
+    context-path: /my-app
   port: 8085
 spring:
   datasource:
@@ -7,10 +9,15 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     open-in-view: true
   liquibase:
-    enabled: false
-    change-log: db/changelog/db.changelog-master.xml
+    enabled: true
+    change-log:  db/changelog/db.changelog-master.xml
+logging:
+  level:
+    root: INFO
+    org.springframework: INFO
+    com.example.shop: DEBUG

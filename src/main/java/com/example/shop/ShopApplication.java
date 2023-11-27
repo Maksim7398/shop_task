@@ -1,15 +1,14 @@
-package com.example.Shop_task1;
+package com.example.shop;
 
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ShopTask1Application {
+public class ShopApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ShopTask1Application.class, args);
-		System.out.println("hello world");
+		SpringApplication.run(ShopApplication.class, args);
 	}
 
 }

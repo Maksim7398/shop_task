@@ -1,14 +1,11 @@
-package com.example.Shop_task1.data;
+package com.example.shop.persist.entity;
 
-import com.fasterxml.jackson.annotation.*;
+import com.example.shop.model.Categories;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -18,21 +15,21 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @NotEmpty
+    @Column(name = "title",nullable = false)
     private String title;
-    @NotEmpty
+    @Column(name = "description",nullable = false)
     private String description;
     @Enumerated(value = EnumType.STRING)
     private Categories categories;
-
+    @Column(name = "price",nullable = false)
     private Double price;
-    @Digits(integer = 5,fraction = 0)
-    private int count;
-    @UpdateTimestamp
-    @Column(name = "exchange_count")
-    private LocalDate exchangeCount;
+    @Column(name = "quantity", nullable = false)
+    private Integer quantity;
+
+    @Column(name = "last_quantity_change")
+    private LocalDateTime lastQuantityChange;
     @CreationTimestamp
     @Column(name = "create_date")
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 
 }

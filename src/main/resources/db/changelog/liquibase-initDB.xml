@@ -1,19 +1,30 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="user (generated)" id="1701031750600-1">
+    <changeSet author="Maksim7398" id="001-create-table-product">
         <createTable tableName="product">
-            <column name="count" type="INTEGER">
-                <constraints nullable="false"/>
-            </column>
-            <column name="create_date" type="date"/>
-            <column name="exchange_count" type="date"/>
-            <column name="price" type="FLOAT8"/>
-            <column name="id" type="UUID">
+            <column name="id" remarks="its unique id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="product_pkey"/>
             </column>
-            <column name="categories" type="VARCHAR(255)"/>
-            <column name="description" type="VARCHAR(255)"/>
-            <column name="title" type="VARCHAR(255)"/>
+            <column name="title" type="VARCHAR(255)" remarks="name of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="DOUBLE PRECISION" remarks="price of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" remarks="count of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="time of burn products">
+            <constraints nullable="false"/>
+            </column>
+            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE" remarks="date change when product quantity changes">
+                <constraints nullable="false"/>
+            </column>
+            <column name="categories" type="VARCHAR(255)" remarks="types of products"/>
+            <column name="description" type="VARCHAR(1000)" remarks="description and characteristics of products"/>
         </createTable>
+    </changeSet>
+    <changeSet id="002-init-records" author="Maksim7398">
+        <sqlFile path="db/changelog/data.sql"/>
     </changeSet>
 </databaseChangeLog>
