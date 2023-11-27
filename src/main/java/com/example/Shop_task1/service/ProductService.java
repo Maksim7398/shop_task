@@ -1,17 +1,14 @@
 package com.example.Shop_task1.service;
 
-import com.example.Shop_task1.data.Categories;
-import com.example.Shop_task1.data.ProductRepository;
-import com.example.Shop_task1.data.Product;
+import com.example.Shop_task1.data.*;
+import com.example.Shop_task1.data.dto.CreateProductRequest;
+import com.example.Shop_task1.data.dto.GetProductResponse;
+import com.example.Shop_task1.exeption.ProductNotFoundExeption;
+import com.example.Shop_task1.mapper.ProductMapper;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.engine.spi.SessionLazyDelegator;
-import org.springframework.data.jpa.provider.HibernateUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -23,31 +20,50 @@ public class ProductService {
 
     private final ProductRepository repository;
 
+    private final ProductMapper mapper;
 
 
     Logger logger = Logger.getLogger(ProductService.class.getSimpleName());
 
-    public void save(Product product){
-        repository.save(product);
-    }
-    public Product getProductById(String id){
-        Optional<Product> byId = repository.findById(UUID.fromString(id));
-        return byId.get();
+    public List<GetProductResponse> poductList() {
+        return mapper.listProduct(repository.findAll());
     }
 
-    public void deleteProdById(String id){
-        repository.deleteById(UUID.fromString(id));
-        logger.info("delete by: " + id);
-    }
-    public void updateProduct(String id, Product p){
-        Product product = getProductById(id);
-        product.setTitle(p.getTitle());
-        product.setCount(p.getCount());
-        product.setCategories(p.getCategories());
-        product.setExchangeCount(p.getExchangeCount());
-        product.setDescription(p.getDescription());
-        product.setPrice(p.getPrice());
-        save(product);
+    public UUID save(CreateProductRequest product) {
+        ProductEntity productEntity = mapper.createProductRequest(product);
+        repository.save(productEntity);
+        return productEntity.getId();
     }
 
+    public GetProductResponse getProductById(String id) {
+        return mapper.getProduct(repository.findById(UUID.fromString(id)).orElseThrow(
+                () -> new ProductNotFoundExeption(id)
+        ));
+    }
+
+    public void deleteProdById(String id) {
+        try {
+            getProductById(id);
+            repository.deleteById(UUID.fromString(id));
+        } catch (ProductNotFoundExeption ex) {
+            throw new ProductNotFoundExeption(id);
+        }
+
+    }
+
+
+    public UUID updateProduct(String id, CreateProductRequest p) {
+        ProductEntity productEntity = mapper.updateProduct(getProductById(id));
+        logger.info(productEntity.toString());
+        productEntity.setTitle(p.getTitle());
+        productEntity.setCount(p.getCount());
+        productEntity.setCategories(p.getCategories());
+        productEntity.setDescription(p.getDescription());
+        productEntity.setPrice(p.getPrice());
+        repository.save(productEntity);
+        logger.info(productEntity.toString());
+        return productEntity.getId();
+    }
 }
+
+

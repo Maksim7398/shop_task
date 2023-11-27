@@ -1,10 +1,11 @@
-package com.example.Shop_task1.data;
+package com.example.Shop_task1.data.dto;
 
-
+import com.example.Shop_task1.data.Categories;
+import lombok.Builder;
 import lombok.Data;
 
 @Data
-public class ProductDto {
+public class CreateProductRequest {
 
     private String title;
 
@@ -15,7 +16,6 @@ public class ProductDto {
     private Double price;
 
     private int count;
-
 
 
 }
