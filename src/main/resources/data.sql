@@ -1,0 +1,2 @@
+insert into product (title, description, categories, price, count, exchange_count, create_date) values ('Pastry - Banana Tea Loaf', 'est quam pharetra magna ac consequat metus sapien ut nunc','BREAD', 121, 88, '08/05/2023', '2023-11-25');
+insert into product (title, description, categories, price, count, exchange_count, create_date) values ('Chickhen - Chicken Phyllo', 'in lectus pellentesque at nulla suspendisse potenti cras in purus eu magna vulputate luctus cum sociis natoque','VEGETABLES',1074, 65, '07/17/2023', '202-11-25');
