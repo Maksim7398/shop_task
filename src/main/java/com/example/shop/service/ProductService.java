@@ -22,11 +22,9 @@ public class ProductService {
     private final ProductRepository repository;
 
     private final ProductMapper mapper;
-
     public final List<ProductDto> poductList() {
         return mapper.listProduct(repository.findAll());
     }
-
     public final UUID save(final CreateProductRequest product) {
         final ProductEntity productEntity = mapper.createProductRequest(product);
         productEntity.setLastQuantityChange(LocalDateTime.now());
@@ -34,37 +32,33 @@ public class ProductService {
         log.info(productEntity + "saved");
         return productEntity.getId();
     }
-
     public final ProductDto getProductById(final UUID id) {
         return mapper.getProduct(repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundExeption("there is no product with this ID")
         ));
     }
-
     public final void deleteProductById(final UUID id) {
         repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundExeption("there is no product with this ID")
         );
         repository.deleteById(id);
     }
-
-    public final UUID updateProduct(final UUID id, final CreateProductRequest p) {
+    public final ProductDto updateProduct(final UUID id, final CreateProductRequest p) {
         final ProductEntity productEntity = mapper.updateProduct(getProductById(id));
         log.info(productEntity.toString());
         if (!productEntity.getQuantity().equals(p.getQuantity())) {
             productEntity.setLastQuantityChange(LocalDateTime.now());
             log.info("quantity was be  changed");
         }
-
         productEntity.setTitle(p.getTitle());
         productEntity.setQuantity(p.getQuantity());
-        productEntity.setCategories(p.getCategories());
+        productEntity.setCategory(p.getCategory());
         productEntity.setDescription(p.getDescription());
         productEntity.setPrice(p.getPrice());
         repository.save(productEntity);
         log.info(productEntity.toString());
 
-        return productEntity.getId();
+        return getProductById(id);
     }
 }
 

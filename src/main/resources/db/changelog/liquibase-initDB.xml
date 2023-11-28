@@ -8,7 +8,7 @@
             <column name="title" type="VARCHAR(255)" remarks="name of products">
                 <constraints nullable="false"/>
             </column>
-            <column name="price" type="DOUBLE PRECISION" remarks="price of products">
+            <column name="price" type="NUMERIC(5,2)" remarks="price of products">
                 <constraints nullable="false"/>
             </column>
             <column name="quantity" type="INTEGER" remarks="count of products">
@@ -20,7 +20,7 @@
             <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE" remarks="date change when product quantity changes">
                 <constraints nullable="false"/>
             </column>
-            <column name="categories" type="VARCHAR(255)" remarks="types of products"/>
+            <column name="category" type="VARCHAR(255)" remarks="types of products"/>
             <column name="description" type="VARCHAR(1000)" remarks="description and characteristics of products"/>
         </createTable>
     </changeSet>

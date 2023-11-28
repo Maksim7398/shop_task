@@ -1,19 +1,19 @@
 package com.example.shop.model;
 
 import com.fasterxml.jackson.annotation.*;
-public enum Categories {
+public enum Category {
     BREAD("Хлеб"),
     VEGETABLES("Овощи"),
     FRUITS("Фрукты"),
     CONFECTIONERY("Кондитерские изделия"),
     MEAT("Мясо");
     private final String label;
-    Categories(String label) {
+    Category(String label) {
         this.label = label;
     }
     @JsonCreator
-    public static Categories fromName(String name) {
-        for (Categories category : Categories.values()) {
+    public static Category fromName(String name) {
+        for (Category category : Category.values()) {
             if (category.name().equals(name)) {
                 return category;
             }

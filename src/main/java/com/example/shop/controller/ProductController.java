@@ -52,7 +52,7 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    public UUID updateProduct(@RequestBody CreateProductRequest product, @PathVariable UUID id) {
-        return service.updateProduct(id, product);
+    public GetProductResponse updateProduct(@RequestBody CreateProductRequest product, @PathVariable UUID id) {
+        return mapper.convertFromDto(service.updateProduct(id, product));
     }
 }

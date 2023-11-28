@@ -1,10 +1,11 @@
 package com.example.shop.persist.entity;
 
-import com.example.shop.model.Categories;
+import com.example.shop.model.Category;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -20,12 +21,11 @@ public class ProductEntity {
     @Column(name = "description",nullable = false)
     private String description;
     @Enumerated(value = EnumType.STRING)
-    private Categories categories;
+    private Category category;
     @Column(name = "price",nullable = false)
-    private Double price;
+    private BigDecimal price;
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
     @Column(name = "last_quantity_change")
     private LocalDateTime lastQuantityChange;
     @CreationTimestamp
