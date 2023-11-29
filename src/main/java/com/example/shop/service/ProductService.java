@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -25,8 +24,8 @@ public class ProductService {
     public final List<ProductDto> poductList() {
         return mapper.listProduct(repository.findAll());
     }
-    public final UUID save(final CreateProductRequest product) {
-        final ProductEntity productEntity = mapper.createProductRequest(product);
+    public final UUID save(final CreateProductRequest request) {
+        final ProductEntity productEntity = mapper.createProductRequest(request);
         productEntity.setLastQuantityChange(LocalDateTime.now());
         repository.save(productEntity);
         log.info(productEntity + "saved");
@@ -43,22 +42,24 @@ public class ProductService {
         );
         repository.deleteById(id);
     }
-    public final ProductDto updateProduct(final UUID id, final CreateProductRequest p) {
-        final ProductEntity productEntity = mapper.updateProduct(getProductById(id));
+    public final ProductDto updateProduct(final UUID id, final CreateProductRequest request) {
+        final ProductEntity productEntity =  repository.findById(id).orElseThrow(
+                () -> new ProductNotFoundExeption("there is no product with this ID")
+        );
         log.info(productEntity.toString());
-        if (!productEntity.getQuantity().equals(p.getQuantity())) {
+        if (!productEntity.getQuantity().equals(request.getQuantity())) {
             productEntity.setLastQuantityChange(LocalDateTime.now());
             log.info("quantity was be  changed");
         }
-        productEntity.setTitle(p.getTitle());
-        productEntity.setQuantity(p.getQuantity());
-        productEntity.setCategory(p.getCategory());
-        productEntity.setDescription(p.getDescription());
-        productEntity.setPrice(p.getPrice());
+        productEntity.setTitle(request.getTitle());
+        productEntity.setQuantity(request.getQuantity());
+        productEntity.setCategory(request.getCategory());
+        productEntity.setDescription(request.getDescription());
+        productEntity.setPrice(request.getPrice());
         repository.save(productEntity);
-        log.info(productEntity.toString());
+        log.debug(productEntity.toString());
 
-        return getProductById(id);
+        return mapper.getProduct(productEntity);
     }
 }
 

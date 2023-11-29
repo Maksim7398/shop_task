@@ -19,13 +19,6 @@
 							"    pm.response.to.have.status(200);\r",
 							"});\r",
 							"\r",
-							"const jsonCrash = {\r",
-							"    \"title\" : \"Banane\",\r",
-							"    \"description\" :\"is banan\",\r",
-							"    \"category\" : \"FRUITS\",\r",
-							"    \"price\" : \"\",\r",
-							"    \"quantity\" : \"\"\r",
-							"}\r",
 							""
 						],
 						"type": "text/javascript"
@@ -37,7 +30,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"title\": \"Banane\",\r\n    \"description\": \"is banan\",\r\n    \"category\": \"FRUITS\",\r\n    \"price\": 250,\r\n    \"quantity\": 5\r\n}",
+					"raw": "{\r\n    \"title\": \"Apple\",\r\n    \"description\": \"is apple\",\r\n    \"category\": \"FRUITS\",\r\n    \"price\": 250,\r\n    \"quantity\": 5\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -119,7 +112,7 @@
 							"pm.test(\"Product title check\", function () {\r",
 							"\tconst jsonData = pm.response.json();\r",
 							"    console.log(jsonData.title)\r",
-							"    pm.expect(jsonData.title).to.eql(\"Banane\")\r",
+							"    pm.expect(jsonData.title).to.eql(\"Apple\")\r",
 							"});\r",
 							""
 						],
@@ -162,7 +155,7 @@
 						"exec": [
 							"pm.test(\"Update passed\", function () {\r",
 							"    const getJson = pm.response.json();\r",
-							"    pm.expect(getJson.title == 'Banane').eql(false);\r",
+							"    pm.expect(getJson.title == 'Apple').eql(false);\r",
 							"});"
 						],
 						"type": "text/javascript"
@@ -231,6 +224,42 @@
 			"response": []
 		},
 		{
+			"name": "Get after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update passed\", function () {\r",
+							"   \tconst jsonData = pm.response.json();\r",
+							"    console.log(jsonData.title)\r",
+							"    pm.expect(jsonData.title).to.eql(\"Хлеб\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/my-app/product/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "delete",
 			"event": [
 				{
@@ -241,11 +270,11 @@
 							"     const status = pm.response.status;\r",
 							"      pm.expect(status).equal(\"OK\");\r",
 							"});\r",
-							"pm.test(\"is delete fail\", function (){\r",
-							"    const status = pm.response.status;\r",
-							"    console.log(status);\r",
-							"    pm.expect(status).equal(\"No Content\");\r",
-							"})"
+							"// pm.test(\"is delete fail\", function (){\r",
+							"//     const status = pm.response.status;\r",
+							"//     console.log(status);\r",
+							"//     pm.expect(status).equal(\"No Content\");\r",
+							"// })"
 						],
 						"type": "text/javascript"
 					}

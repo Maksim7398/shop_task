@@ -30,8 +30,9 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public UUID createProduct(@RequestBody CreateProductRequest createProductRequest) {
-        return service.save(createProductRequest);
+    public UUID createProduct (@RequestBody CreateProductRequest createProductRequest) {
+
+            return service.save(createProductRequest);
     }
 
     @SneakyThrows

@@ -1,7 +1,15 @@
 package com.example.shop.persist.entity;
 
 import com.example.shop.model.Category;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -18,7 +26,7 @@ public class ProductEntity {
     private UUID id;
     @Column(name = "title",nullable = false)
     private String title;
-    @Column(name = "description",nullable = false)
+    @Column(name = "description")
     private String description;
     @Enumerated(value = EnumType.STRING)
     private Category category;

@@ -14,7 +14,6 @@ public interface ProductMapper {
     ProductDto getProduct(ProductEntity product);
     List<ProductDto> listProduct(List<ProductEntity> productEntityList);
     List<GetProductResponse> listProductToResponse(List<ProductDto> productDto);
-    ProductEntity updateProduct(ProductDto dto);
     GetProductResponse convertFromDto(ProductDto productDto);
 
 }
