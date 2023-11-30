@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "5cbd1535-5d0e-406f-916d-7c891e8ec2d4",
+		"name": "ProductService",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24703949"
+	},
+	"item": [
+		{
+			"name": "create product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();\r",
+							"pm.environment.set('id', jsonData);\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Apple\",\r\n    \"description\": \"is apple\",\r\n    \"category\": \"FRUITS\",\r\n    \"price\": 250,\r\n    \"quantity\": 5\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/my-app/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "Milk",
+							"disabled": true
+						},
+						{
+							"key": "description",
+							"value": "is Milk",
+							"disabled": true
+						},
+						{
+							"key": "categories",
+							"value": "BREAD",
+							"disabled": true
+						},
+						{
+							"key": "price",
+							"value": "100",
+							"disabled": true
+						},
+						{
+							"key": "count",
+							"value": "10",
+							"disabled": true
+						},
+						{
+							"key": "exchangeCount",
+							"value": "2023-11-25",
+							"disabled": true
+						},
+						{
+							"key": "createDate",
+							"value": "2023-11-25",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get_product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Product title check\", function () {\r",
+							"\tconst jsonData = pm.response.json();\r",
+							"    console.log(jsonData.title)\r",
+							"    pm.expect(jsonData.title).to.eql(\"Apple\")\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/my-app/product/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product",
+						"{{id}}"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": null,
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update_prod",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update passed\", function () {\r",
+							"    const getJson = pm.response.json();\r",
+							"    pm.expect(getJson.title == 'Apple').eql(false);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\":\"Хлеб\",\r\n    \"description\":\"это хлеб\",\r\n    \"category\":\"BREAD\",\r\n    \"price\":150,\r\n    \"quantity\": 10\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/my-app/product/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/my-app/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get after update",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Update passed\", function () {\r",
+							"   \tconst jsonData = pm.response.json();\r",
+							"    console.log(jsonData.title)\r",
+							"    pm.expect(jsonData.title).to.eql(\"Хлеб\")\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/my-app/product/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"delete passed\", function () {\r",
+							"     const status = pm.response.status;\r",
+							"      pm.expect(status).equal(\"OK\");\r",
+							"});\r",
+							"// pm.test(\"is delete fail\", function (){\r",
+							"//     const status = pm.response.status;\r",
+							"//     console.log(status);\r",
+							"//     pm.expect(status).equal(\"No Content\");\r",
+							"// })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8085/my-app/product/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create product with field not valid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Field is null\", function () {\r",
+							"    pm.response.to.have.status(500);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"title\": \"Banane\",\r\n    \"description\": \"is banan\",\r\n    \"category\": \"FRUITS\",\r\n    \"price\": 250,\r\n    \"quantity\":\"\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8085/my-app/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8085",
+					"path": [
+						"my-app",
+						"product"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "id",
+			"value": "{{id}}",
+			"type": "string"
+		}
+	]
+}
