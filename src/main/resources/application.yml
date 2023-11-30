@@ -4,7 +4,7 @@ server:
   port: 8085
 spring:
   profiles:
-    active: dev
+    active: local
   datasource:
     url: jdbc:postgresql://localhost:5432/product_store
     username: user

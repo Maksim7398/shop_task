@@ -2,6 +2,7 @@ package com.example.shop.model;
 
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.lang.Nullable;
@@ -14,6 +15,8 @@ import java.util.UUID;
 public class ProductDto {
 
     private final UUID id;
+    @Nullable
+    private String article;
     @Nullable
     private final String title;
     @Nullable
