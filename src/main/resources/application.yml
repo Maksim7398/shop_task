@@ -3,8 +3,6 @@ server:
     context-path: /my-app
   port: 8085
 spring:
-  profiles:
-    active: local
   datasource:
     url: jdbc:postgresql://localhost:5432/product_store
     username: user
@@ -23,7 +21,3 @@ logging:
     root: INFO
     org.springframework: INFO
     com.example.shop: DEBUG
-app:
-  scheduling:
-      enabled: true
-      period: 30000
