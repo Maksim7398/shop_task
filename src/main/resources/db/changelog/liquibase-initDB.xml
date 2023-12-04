@@ -11,12 +11,9 @@
             <column name="price" type="NUMERIC(5,2)" remarks="price of products">
                 <constraints nullable="false"/>
             </column>
-<<<<<<< HEAD
             <column name="article" type="VARCHAR(255)" remarks="article of products">
                 <constraints  unique="true" nullable="false"/>
             </column>
-=======
->>>>>>> develop
             <column name="quantity" type="INTEGER" remarks="count of products">
                 <constraints nullable="false"/>
             </column>

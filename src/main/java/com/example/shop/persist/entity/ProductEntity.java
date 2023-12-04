@@ -9,11 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
-<<<<<<< HEAD
-import jakarta.validation.constraints.NotBlank;
-=======
->>>>>>> develop
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -28,11 +23,8 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-<<<<<<< HEAD
     @Column(name = "article")
     private String article;
-=======
->>>>>>> develop
     @Column(name = "title",nullable = false)
     private String title;
     @Column(name = "description")

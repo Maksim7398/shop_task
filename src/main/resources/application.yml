@@ -3,11 +3,8 @@ server:
     context-path: /my-app
   port: 8085
 spring:
-<<<<<<< HEAD
   profiles:
     active: local
-=======
->>>>>>> develop
   datasource:
     url: jdbc:postgresql://localhost:5432/product_store
     username: user

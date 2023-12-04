@@ -19,19 +19,14 @@ public class ProductDto {
 
     private final UUID id;
     @Nullable
-<<<<<<< HEAD
     private String article;
     @Nullable
-=======
->>>>>>> develop
     private final String title;
     @Nullable
     private final String description;
     @Nullable
     private final Category category;
-
     private final Double price;
-
     private Integer quantity;
     private final LocalDateTime lastQuantityChange;
     private final LocalDateTime createDate;
