@@ -1,5 +1,7 @@
 package com.example.shop.service;
 
+import com.example.shop.controller.request.UpdateProductRequest;
+import com.example.shop.exeption.ArticleAlreadyExistsException;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.repository.ProductRepository;
@@ -21,15 +23,18 @@ public class ProductService {
     private final ProductRepository repository;
 
     private final ProductMapper mapper;
-    public final List<ProductDto> poductList() {
+    public final List<ProductDto> productList() {
         return mapper.listProduct(repository.findAll());
     }
     public final UUID save(final CreateProductRequest request) {
-        final ProductEntity productEntity = mapper.createProductRequest(request);
-        productEntity.setLastQuantityChange(LocalDateTime.now());
-        repository.save(productEntity);
-        log.info(productEntity + "saved");
-        return productEntity.getId();
+        repository.findByArticle(request.getArticle()).ifPresent(product-> {
+            throw new ArticleAlreadyExistsException("продукт с таким артикулом уже существует");
+        });
+            final ProductEntity productEntity = mapper.createProductRequest(request);
+            productEntity.setLastQuantityChange(LocalDateTime.now());
+            repository.save(productEntity);
+            log.info(productEntity + "saved");
+            return productEntity.getId();
     }
     public final ProductDto getProductById(final UUID id) {
         return mapper.getProduct(repository.findById(id).orElseThrow(
@@ -42,7 +47,7 @@ public class ProductService {
         );
         repository.deleteById(id);
     }
-    public final ProductDto updateProduct(final UUID id, final CreateProductRequest request) {
+    public final ProductDto updateProduct(final UUID id, final UpdateProductRequest request) {
         final ProductEntity productEntity =  repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundExeption("there is no product with this ID")
         );

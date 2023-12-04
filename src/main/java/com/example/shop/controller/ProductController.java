@@ -1,6 +1,7 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateProductRequest;
+import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.exeption.ProductNotFoundExeption;
 import com.example.shop.mapper.ProductMapper;
@@ -26,7 +27,7 @@ public class ProductController {
 
     @GetMapping("/products")
     public List<GetProductResponse> listProducts() {
-        return mapper.listProductToResponse(service.poductList());
+        return mapper.listProductToResponse(service.productList());
     }
     @PostMapping("/product")
     public UUID createProduct (@RequestBody CreateProductRequest createProductRequest) {
@@ -49,7 +50,7 @@ public class ProductController {
         }
     }
     @PutMapping("/product/{id}")
-    public GetProductResponse updateProduct(@RequestBody CreateProductRequest product, @PathVariable UUID id) {
+    public GetProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDto(service.updateProduct(id, product));
     }
 }
