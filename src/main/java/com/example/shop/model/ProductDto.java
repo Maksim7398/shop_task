@@ -1,11 +1,4 @@
 package com.example.shop.model;
-
-
-
-<<<<<<< HEAD
-import jakarta.validation.constraints.NotBlank;
-=======
->>>>>>> develop
 import lombok.Builder;
 import lombok.Value;
 import org.springframework.lang.Nullable;

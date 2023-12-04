@@ -28,19 +28,16 @@ public class ProductController {
     public List<GetProductResponse> listProducts() {
         return mapper.listProductToResponse(service.poductList());
     }
-
     @PostMapping("/product")
     public UUID createProduct (@RequestBody CreateProductRequest createProductRequest) {
 
             return service.save(createProductRequest);
     }
-
     @SneakyThrows
     @GetMapping("/product/{id}")
     public GetProductResponse getProduct(@PathVariable UUID id) {
         return ResponseEntity.ok(mapper.convertFromDto(service.getProductById(id))).getBody();
     }
-
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> deleteByID(@PathVariable UUID id) {
         try {
@@ -51,7 +48,6 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
-
     @PutMapping("/product/{id}")
     public GetProductResponse updateProduct(@RequestBody CreateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDto(service.updateProduct(id, product));
