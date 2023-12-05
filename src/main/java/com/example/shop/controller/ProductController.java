@@ -3,11 +3,10 @@ package com.example.shop.controller;
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
-import com.example.shop.exeption.ProductNotFoundExeption;
+import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +43,7 @@ public class ProductController {
             service.deleteProductById(id);
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (ProductNotFoundExeption ex) {
+        } catch (ProductNotFoundException ex) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
