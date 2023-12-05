@@ -1,6 +1,7 @@
 package com.example.shop.mapper;
 
 import com.example.shop.controller.request.CreateProductRequest;
+import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
@@ -15,5 +16,6 @@ public interface ProductMapper {
     List<ProductDto> listProduct(List<ProductEntity> productEntityList);
     List<GetProductResponse> listProductToResponse(List<ProductDto> productDto);
     GetProductResponse convertFromDto(ProductDto productDto);
+    UpdateProductRequest updateProdReq(ProductDto productDto);
 
 }
