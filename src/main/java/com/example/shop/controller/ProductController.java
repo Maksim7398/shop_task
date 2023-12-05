@@ -34,7 +34,6 @@ public class ProductController {
 
             return service.save(createProductRequest);
     }
-    @SneakyThrows
     @GetMapping("/product/{id}")
     public GetProductResponse getProduct(@PathVariable UUID id) {
         return ResponseEntity.ok(mapper.convertFromDto(service.getProductById(id))).getBody();
