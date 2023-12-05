@@ -34,10 +34,9 @@ public class ProductController {
 
             return service.save(createProductRequest);
     }
-    @SneakyThrows
     @GetMapping("/product/{id}")
     public GetProductResponse getProduct(@PathVariable UUID id) {
-        return ResponseEntity.ok(mapper.convertFromDto(service.getProductById(id))).getBody();
+        return mapper.convertFromDto(service.getProductById(id));
     }
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> deleteByID(@PathVariable UUID id) {
