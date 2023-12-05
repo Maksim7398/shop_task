@@ -2,8 +2,8 @@ package com.example.shop.service;
 
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.UpdateProductRequest;
-import com.example.shop.exeption.ArticleAlreadyExistsException;
-import com.example.shop.exeption.ProductNotFoundExeption;
+import com.example.shop.exception.ArticleAlreadyExistsException;
+import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
@@ -43,20 +43,20 @@ public class ProductService {
 
     public final ProductDto getProductById(final UUID id) {
         return mapper.getProduct(repository.findById(id).orElseThrow(
-                () -> new ProductNotFoundExeption("there is no product with this ID")
+                () -> new ProductNotFoundException("there is no product with this ID")
         ));
     }
 
     public final void deleteProductById(final UUID id) {
         repository.findById(id).orElseThrow(
-                () -> new ProductNotFoundExeption("there is no product with this ID")
+                () -> new ProductNotFoundException("there is no product with this ID")
         );
         repository.deleteById(id);
     }
 
     public final ProductDto updateProduct(final UUID id, final UpdateProductRequest request) {
         final ProductEntity productEntity = repository.findById(id).orElseThrow(
-                () -> new ProductNotFoundExeption("there is no product with this ID")
+                () -> new ProductNotFoundException("there is no product with this ID")
         );
         log.info(productEntity.toString());
         if (!productEntity.getQuantity().equals(request.getQuantity())) {
