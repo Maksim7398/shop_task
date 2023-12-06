@@ -25,13 +25,13 @@ public class ProductEntity {
     private UUID id;
     @Column(name = "article")
     private String article;
-    @Column(name = "title",nullable = false)
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description")
     private String description;
     @Enumerated(value = EnumType.STRING)
     private Category category;
-    @Column(name = "price",nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

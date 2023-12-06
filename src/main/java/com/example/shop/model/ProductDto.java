@@ -1,13 +1,13 @@
 package com.example.shop.model;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Value;
 import org.springframework.lang.Nullable;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+
 @Value
 @Builder
 public class ProductDto {

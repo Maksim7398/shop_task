@@ -3,9 +3,10 @@ package com.example.shop.controller;
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
+import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
-import com.example.shop.service.ProductService;
+import com.example.shop.service.ProductServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,8 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
-    private final ProductService service;
+
+    private final ProductServiceImpl service;
     private final ProductMapper mapper;
 
     @GetMapping("/products")
@@ -29,7 +31,6 @@ public class ProductController {
 
     @PostMapping("/product")
     public UUID createProduct(@RequestBody CreateProductRequest createProductRequest) {
-
         return service.save(createProductRequest);
     }
 
@@ -50,7 +51,7 @@ public class ProductController {
     }
 
     @PutMapping("/product/{id}")
-    public GetProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
-        return mapper.convertFromDto(service.updateProduct(id, product));
+    public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
+        return mapper.convertFromDtoToResponse(service.updateProduct(id, product));
     }
 }
