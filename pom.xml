@@ -14,7 +14,7 @@
 	<name>Shop_task1</name>
 	<description>task1 for traineeship</description>
 	<properties>
-		<java.version>11</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>

@@ -1,17 +1,18 @@
 package com.example.shop.service;
 
 import com.example.shop.controller.request.CreateProductRequest;
-import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.exception.ArticleAlreadyExistsException;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.repository.ProductRepository;
+import com.example.shop.service.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -57,7 +58,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductDto updateProduct(final UUID id, final UpdateProductRequest request) {
+    public ProductDto updateProduct(final UUID id, final ImmutableUpdateProductRequest request) {
         final ProductEntity productEntity = repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("there is no product with this ID")
         );
@@ -78,6 +79,15 @@ public class ProductServiceImpl implements ProductService {
         log.debug(productEntity.toString());
 
         return mapper.getProduct(productEntity);
+    }
+
+    @Override
+    public void updatePriceForProduct(final Double percent) {
+        for (ProductEntity productEntity : repository.findAll()) {
+            BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(percent)).add(productEntity.getPrice());
+            productEntity.setPrice(price);
+            repository.save(productEntity);
+        }
     }
 }
 

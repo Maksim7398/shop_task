@@ -52,6 +52,6 @@ public class ProductController {
 
     @PutMapping("/product/{id}")
     public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
-        return mapper.convertFromDtoToResponse(service.updateProduct(id, product));
+        return mapper.convertFromDtoToResponse(service.updateProduct(id, mapper.convertFromUpdateToImmutableRequest(product)));
     }
 }
