@@ -6,7 +6,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.UUID;
-@Repository
-public interface ProductRepository extends JpaRepository<ProductEntity, UUID> , JpaSpecificationExecutor<ProductEntity> {
 
+@Repository
+public interface ProductRepository extends JpaRepository<ProductEntity, UUID>, JpaSpecificationExecutor<ProductEntity> {
+    boolean existsByArticle(String article);
 }

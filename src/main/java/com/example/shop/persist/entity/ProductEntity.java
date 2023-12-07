@@ -9,7 +9,6 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -24,13 +23,15 @@ public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column(name = "title",nullable = false)
+    @Column(name = "article")
+    private String article;
+    @Column(name = "title", nullable = false)
     private String title;
     @Column(name = "description")
     private String description;
     @Enumerated(value = EnumType.STRING)
     private Category category;
-    @Column(name = "price",nullable = false)
+    @Column(name = "price", nullable = false)
     private BigDecimal price;
     @Column(name = "quantity", nullable = false)
     private Integer quantity;

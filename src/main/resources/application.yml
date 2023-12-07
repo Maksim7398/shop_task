@@ -21,3 +21,9 @@ logging:
     root: INFO
     org.springframework: INFO
     com.example.shop: DEBUG
+app:
+  scheduling:
+      enabled: true
+      period: 30000
+      percent: 0.1
+
