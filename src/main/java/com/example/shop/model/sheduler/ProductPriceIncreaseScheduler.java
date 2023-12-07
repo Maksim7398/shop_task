@@ -26,7 +26,7 @@ public class ProductPriceIncreaseScheduler {
     public void priceIncrease(){
         service.productList().forEach(productEntity -> {
            BigDecimal add = productEntity.getPrice().multiply(new BigDecimal("0.1")).add(productEntity.getPrice());
-            UpdateProductRequest updateProductRequest = mapper.updateProdReq(productEntity);
+            UpdateProductRequest updateProductRequest = mapper.convertFromDtoToRequest(productEntity);
             updateProductRequest.setPrice(add);
             service.updateProduct(productEntity.getId(),updateProductRequest);
         });
