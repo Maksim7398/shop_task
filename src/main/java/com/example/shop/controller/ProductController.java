@@ -6,7 +6,7 @@ import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
-import com.example.shop.service.ProductServiceImpl;
+import com.example.shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final ProductServiceImpl service;
+    private final ProductService service;
     private final ProductMapper mapper;
 
     @GetMapping("/products")
