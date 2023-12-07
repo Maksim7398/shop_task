@@ -1,16 +1,12 @@
 package com.example.shop.model.sheduler;
 
-import com.example.shop.mapper.ProductMapper;
 import com.example.shop.service.ProductService;
-import com.example.shop.service.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-
 
 @Service
 @RequiredArgsConstructor
@@ -19,17 +15,11 @@ import java.math.BigDecimal;
 public class ProductPriceIncreaseScheduler {
 
     private final ProductService service;
-
-    private final ProductMapper mapper;
+    @Value("${app.scheduling.percent}")
+    private Double percent;
 
     @Scheduled(fixedDelayString = "${app.scheduling.period}")
     public void priceIncrease() {
-        service.productList().forEach(productEntity -> {
-           final BigDecimal add = productEntity.getPrice().multiply(new BigDecimal("0.1")).add(productEntity.getPrice());
-           final ImmutableUpdateProductRequest updateProductRequest = mapper.convertForUpdateRequest(productEntity);
-           updateProductRequest.setPrice(add);
-           service.updateProduct(productEntity.getId(), updateProductRequest);
-           log.debug(String.valueOf(productEntity.getPrice()));
-        });
+        service.updatePriceForProduct(percent);
     }
 }

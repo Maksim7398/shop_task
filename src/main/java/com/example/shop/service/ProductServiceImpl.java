@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -78,6 +79,15 @@ public class ProductServiceImpl implements ProductService {
         log.debug(productEntity.toString());
 
         return mapper.getProduct(productEntity);
+    }
+
+    @Override
+    public void updatePriceForProduct(final Double percent) {
+        for (ProductEntity productEntity : repository.findAll()) {
+            BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(percent)).add(productEntity.getPrice());
+            productEntity.setPrice(price);
+            repository.save(productEntity);
+        }
     }
 }
 
