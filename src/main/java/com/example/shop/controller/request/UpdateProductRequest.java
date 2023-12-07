@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
 @Data
 public class UpdateProductRequest {
     @NotBlank(message = "article must not be blank")

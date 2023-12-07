@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 
 @Data
 public class CreateProductRequest {
-
     @NotBlank(message = "article must not be blank")
     private String article;
     @NotBlank(message = "title must not be blank")

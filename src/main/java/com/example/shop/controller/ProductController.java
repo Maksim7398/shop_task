@@ -3,6 +3,7 @@ package com.example.shop.controller;
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
+import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.service.ProductService;
@@ -21,22 +22,23 @@ import java.util.UUID;
 public class ProductController {
 
     private final ProductService service;
-
     private final ProductMapper mapper;
 
     @GetMapping("/products")
     public List<GetProductResponse> listProducts() {
         return mapper.listProductToResponse(service.productList());
     }
-    @PostMapping("/product")
-    public UUID createProduct (@RequestBody CreateProductRequest createProductRequest) {
 
-            return service.save(createProductRequest);
+    @PostMapping("/product")
+    public UUID createProduct(@RequestBody CreateProductRequest createProductRequest) {
+        return service.save(createProductRequest);
     }
+
     @GetMapping("/product/{id}")
     public GetProductResponse getProduct(@PathVariable UUID id) {
         return mapper.convertFromDto(service.getProductById(id));
     }
+
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> deleteByID(@PathVariable UUID id) {
         try {
@@ -47,8 +49,9 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
+
     @PutMapping("/product/{id}")
-    public GetProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
-        return mapper.convertFromDto(service.updateProduct(id, product));
+    public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
+        return mapper.convertFromDtoToResponse(service.updateProduct(id, product));
     }
 }
