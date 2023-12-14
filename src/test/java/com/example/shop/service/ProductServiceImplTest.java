@@ -140,5 +140,18 @@ class ProductServiceImplTest {
                 .isInstanceOf(ArticleAlreadyExistsException.class)
                 .hasMessageContaining("продукт с таким артикулом уже существует");
     }
+    @Test
+    public void  updatePriceForProduct_checkChangedPrice_test(){
+        stubEntity = ProductEntityBuilder.aProductEntity().build();
+        when(repositoryMock.findAll()).thenReturn(List.of(stubEntity));
+        final BigDecimal expected = stubEntity.getPrice().multiply(new BigDecimal(0.1)).add(stubEntity.getPrice());
+        underTest.updatePriceForProduct(0.1);
+
+        ArgumentCaptor<ProductEntity> captor = ArgumentCaptor.forClass(ProductEntity.class);
+        verify(repositoryMock).save(captor.capture());
+        ProductEntity actual = captor.getValue();
+
+        assertEquals(expected,actual.getPrice());
+    }
 
 }
