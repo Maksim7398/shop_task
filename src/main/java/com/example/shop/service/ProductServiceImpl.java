@@ -27,11 +27,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductDto> productList() {
         List<ProductEntity> all = repository.findAll();
-        if (all.isEmpty()){
+        if (all.isEmpty()) {
             throw new ProductNotFoundException("list products is empty");
         }
         return mapper.listProduct(all);
     }
+
     @Override
     public UUID save(final CreateProductRequest request) {
         if (repository.existsByArticle(request.getArticle())) {
@@ -88,7 +89,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void updatePriceForProduct(final Double percent) {
         for (ProductEntity productEntity : repository.findAll()) {
-            BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(percent)).add(productEntity.getPrice());
+            BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(String.valueOf(percent))).add(productEntity.getPrice());
             productEntity.setPrice(price);
             repository.save(productEntity);
         }
