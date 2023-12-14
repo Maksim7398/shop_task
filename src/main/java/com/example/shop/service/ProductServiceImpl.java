@@ -26,9 +26,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<ProductDto> productList() {
-        return mapper.listProduct(repository.findAll());
+        List<ProductEntity> all = repository.findAll();
+        if (all.isEmpty()){
+            throw new ProductNotFoundException("list products is empty");
+        }
+        return mapper.listProduct(all);
     }
-
     @Override
     public UUID save(final CreateProductRequest request) {
         if (repository.existsByArticle(request.getArticle())) {
@@ -44,7 +47,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDto getProductById(final UUID id) {
-        return mapper.getProduct(repository.findById(id).orElseThrow(
+        return mapper.convertFromEntityToDto(repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("there is no product with this ID")
         ));
     }
@@ -66,7 +69,8 @@ public class ProductServiceImpl implements ProductService {
         if (!productEntity.getQuantity().equals(request.getQuantity())) {
             productEntity.setLastQuantityChange(LocalDateTime.now());
             log.info("quantity was be  changed");
-        } else if (repository.existsByArticle(request.getArticle()) && !request.getArticle().equals(productEntity.getArticle())) {
+        }
+        if (repository.existsByArticle(request.getArticle()) && !request.getArticle().equals(productEntity.getArticle())) {
             throw new ArticleAlreadyExistsException("продукт с таким артикулом уже существует");
         }
         productEntity.setArticle(request.getArticle());
@@ -78,7 +82,7 @@ public class ProductServiceImpl implements ProductService {
         repository.save(productEntity);
         log.debug(productEntity.toString());
 
-        return mapper.getProduct(productEntity);
+        return mapper.convertFromEntityToDto(productEntity);
     }
 
     @Override
