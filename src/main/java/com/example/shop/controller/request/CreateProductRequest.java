@@ -19,10 +19,10 @@ public class CreateProductRequest {
     private String title;
     @NotBlank(message = "description must not be blank")
     private String description;
-    @NotNull(message = "categories must not be blank")
+    @NotNull(message = "categories must not be null")
     private Category category;
     @Positive(message = "Price should be at least 0 or higher")
     private BigDecimal price;
-    @NotNull(message = "quantity must not be blank")
+    @NotNull(message = "quantity must not be null")
     private Integer quantity;
 }

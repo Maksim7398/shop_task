@@ -7,6 +7,7 @@ import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.service.ProductService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class ProductController {
     }
 
     @PostMapping("/product")
-    public UUID createProduct(@RequestBody CreateProductRequest createProductRequest) {
+    public UUID createProduct(@RequestBody @Valid CreateProductRequest createProductRequest) {
         return service.save(createProductRequest);
     }
 
