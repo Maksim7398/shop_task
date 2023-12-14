@@ -12,12 +12,12 @@ import org.springframework.stereotype.Component;
 public class CheckTimeOfExecutionMethod {
 
     @Around("@annotation(com.example.shop.service.annotation.CheckTime)")
-    public Object retry(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object checkTimeExecutionService(ProceedingJoinPoint joinPoint) throws Throwable {
         final long startTime = System.currentTimeMillis();
         final Object proceed = joinPoint.proceed();
-        final String nameMethod = joinPoint.getSignature().getName();
         final long time = System.currentTimeMillis() - startTime;
-        log.info("method is name: " + nameMethod +  " execution time =  " + time + " ms");
+        log.info("method name: " + joinPoint.getSignature() +  " execution time =  " + time + " ms");
+
         return proceed;
     }
 }
