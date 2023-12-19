@@ -13,6 +13,7 @@ public class ImmutableUpdateProductRequestBuilder {
     public static final Category DEFAULT_CATEGORY = MEAT;
     public static final BigDecimal DEFAULT_PRICE = new BigDecimal(200);
     public static final Integer DEFAULT_QUANTITY = 10;
+    public static final Boolean IS_AVAILABLE = false;
 
 
     private String article = DEFAULT_ARTICLE;
@@ -21,6 +22,7 @@ public class ImmutableUpdateProductRequestBuilder {
     private Category category = DEFAULT_CATEGORY;
     private BigDecimal price = DEFAULT_PRICE;
     private Integer quantity = DEFAULT_QUANTITY;
+    private Boolean isAvailable = IS_AVAILABLE;
 
     private ImmutableUpdateProductRequestBuilder() {
     }
@@ -52,6 +54,10 @@ public class ImmutableUpdateProductRequestBuilder {
         this.quantity = quantity;
         return this;
     }
+    public ImmutableUpdateProductRequestBuilder withIsAvailable(Boolean available) {
+        this.isAvailable = available;
+        return this;
+    }
     public ImmutableUpdateProductRequest build() {
         return ImmutableUpdateProductRequest.builder()
 
@@ -61,6 +67,7 @@ public class ImmutableUpdateProductRequestBuilder {
                 .category(category)
                 .price(price)
                 .quantity(quantity)
+                .isAvailable(isAvailable)
                 .build();
     }
 }

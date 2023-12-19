@@ -25,4 +25,5 @@ public class ProductDto {
     private final Integer quantity;
     private final LocalDateTime lastQuantityChange;
     private final LocalDateTime createDate;
+    private final Boolean isAvailable;
 }

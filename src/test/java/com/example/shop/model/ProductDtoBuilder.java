@@ -15,6 +15,7 @@ public class ProductDtoBuilder {
     public static final Integer DEFAULT_QUANTITY = 5;
     public static final LocalDateTime DEFAULT_LAST_QUENTITY_CHANGED = LocalDateTime.now();
     public static final LocalDateTime DEFAULT_CREATE_DATE = LocalDateTime.now();
+    public static final Boolean IS_AVAILABLE = false;
 
 
     private UUID id = DEFAULT_ID;
@@ -26,6 +27,7 @@ public class ProductDtoBuilder {
     private Integer quantity = DEFAULT_QUANTITY;
     private LocalDateTime lastQuantityChange = DEFAULT_LAST_QUENTITY_CHANGED;
     private LocalDateTime createDate = DEFAULT_CREATE_DATE;
+    private Boolean isAvailable = IS_AVAILABLE;
 
     private ProductDtoBuilder() {
     }
@@ -68,6 +70,10 @@ public class ProductDtoBuilder {
         this.quantity = quantity;
         return this;
     }
+    public ProductDtoBuilder withIsAvailable(Boolean available) {
+        this.isAvailable = available;
+        return this;
+    }
     public ProductDto build() {
         return ProductDto.builder()
                 .id(id)
@@ -79,6 +85,7 @@ public class ProductDtoBuilder {
                 .quantity(quantity)
                 .lastQuantityChange(lastQuantityChange)
                 .createDate(createDate)
+                .isAvailable(isAvailable)
                 .build();
     }
 }

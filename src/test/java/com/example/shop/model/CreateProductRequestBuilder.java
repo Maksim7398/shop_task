@@ -14,6 +14,8 @@ public class CreateProductRequestBuilder {
     public static final BigDecimal DEFAULT_PRICE = new BigDecimal(100);
     public static final Integer DEFAULT_QUANTITY = 5;
 
+
+
     private String article = DEFAULT_ARTICLE;
     private String title = DEFAULT_TITLE;
     private String description = DEFAULT_DESCRIPTION;

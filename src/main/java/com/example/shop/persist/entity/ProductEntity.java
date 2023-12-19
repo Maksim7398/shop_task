@@ -46,5 +46,7 @@ public class ProductEntity {
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;
+    @Column(name = "is_available")
+    private Boolean isAvailable;
 
 }

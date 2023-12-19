@@ -20,4 +20,6 @@ public class ImmutableUpdateProductRequest {
     private BigDecimal price;
 
     private Integer quantity;
+
+    private Boolean isAvailable;
 }

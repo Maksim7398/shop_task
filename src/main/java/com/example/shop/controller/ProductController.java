@@ -1,6 +1,7 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateProductRequest;
+import com.example.shop.controller.request.SearchFilter;
 import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.controller.response.UpdateProductResponse;
@@ -26,8 +27,8 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/products")
-    public List<GetProductResponse> listProducts() {
-        return mapper.listProductToResponse(service.productList());
+    public List<GetProductResponse> listProducts(@RequestParam("offset") Integer offset,@RequestParam("limit") Integer limit) {
+        return mapper.listProductToResponse(service.productList(offset,limit));
     }
 
     @PostMapping("/product")
@@ -55,4 +56,9 @@ public class ProductController {
     public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDtoToResponse(service.updateProduct(id, mapper.convertFromUpdateToImmutableRequest(product)));
     }
+    @GetMapping(value = {"/product/search"})
+    public List<GetProductResponse> getProductByTitle(@RequestBody SearchFilter searchFilter){
+        return mapper.listProductToResponse(service.findProductEntityToFilter(searchFilter));
+    }
+
 }
