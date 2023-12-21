@@ -14,8 +14,6 @@ public class ImmutableUpdateProductRequestBuilder {
     public static final BigDecimal DEFAULT_PRICE = new BigDecimal(200);
     public static final Integer DEFAULT_QUANTITY = 10;
     public static final Boolean IS_AVAILABLE = false;
-
-
     private String article = DEFAULT_ARTICLE;
     private String title = DEFAULT_TITLE;
     private String description = DEFAULT_DESCRIPTION;
@@ -23,7 +21,6 @@ public class ImmutableUpdateProductRequestBuilder {
     private BigDecimal price = DEFAULT_PRICE;
     private Integer quantity = DEFAULT_QUANTITY;
     private Boolean isAvailable = IS_AVAILABLE;
-
     private ImmutableUpdateProductRequestBuilder() {
     }
     public static ImmutableUpdateProductRequestBuilder aImmutableUpdateProductRequest() {

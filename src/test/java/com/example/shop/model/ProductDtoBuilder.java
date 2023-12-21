@@ -17,7 +17,6 @@ public class ProductDtoBuilder {
     public static final LocalDateTime DEFAULT_CREATE_DATE = LocalDateTime.now();
     public static final Boolean IS_AVAILABLE = false;
 
-
     private UUID id = DEFAULT_ID;
     private String article = DEFAULT_ARTICLE;
     private String title = DEFAULT_TITLE;

@@ -31,6 +31,7 @@ public class ProductEntityBuilder {
     private LocalDateTime lastQuantityChanged = DEFAULT_LAST_QUENTITY_CHANGED;
     private LocalDateTime createDate = DEFAULT_CREATE_DATE;
     private Boolean isAvailable = IS_AVAILABLE;
+
     private ProductEntityBuilder() {
     }
     public static ProductEntityBuilder aProductEntity() {

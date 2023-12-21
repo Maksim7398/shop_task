@@ -9,6 +9,7 @@ import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.specification.ProductSpecification;
+import com.example.shop.service.annotation.CheckTime;
 import com.example.shop.service.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductMapper mapper;
     private final ProductSpecification specification;
 
+    @CheckTime
     @Override
-    public List<ProductDto> productList(Integer offset,Integer limit) {
-        Pageable nextPage = PageRequest.of(offset,limit);
+    public List<ProductDto> productList(Integer offset, Integer limit) {
+        Pageable nextPage = PageRequest.of(offset, limit);
         Page<ProductEntity> allProduct = repository.findAll(nextPage);
         if (allProduct.getContent().isEmpty()) {
             throw new ProductNotFoundException("list products is empty");
@@ -43,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CheckTime
     public UUID save(final CreateProductRequest request) {
         if (repository.existsByArticle(request.getArticle())) {
             throw new ArticleAlreadyExistsException("продукт с таким артикулом уже существует");
@@ -57,6 +60,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CheckTime
     public ProductDto getProductById(final UUID id) {
         return mapper.convertFromEntityToDto(repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("there is no product with this ID")
@@ -64,6 +68,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CheckTime
     public void deleteProductById(final UUID id) {
         repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("there is no product with this ID")
@@ -72,6 +77,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CheckTime
     public ProductDto updateProduct(final UUID id, final ImmutableUpdateProductRequest request) {
         final ProductEntity productEntity = repository.findById(id).orElseThrow(
                 () -> new ProductNotFoundException("there is no product with this ID")
@@ -98,6 +104,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @CheckTime
     public void updatePriceForProduct(final Double percent) {
         for (ProductEntity productEntity : repository.findAll()) {
             BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(String.valueOf(percent))).add(productEntity.getPrice());
@@ -106,11 +113,11 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
+    @CheckTime
     @Override
-    public List <ProductDto> findProductEntityToFilter(SearchFilter filter) {
-       return mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+    public List<ProductDto> findProductEntityToFilter(SearchFilter filter) {
+        return mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
     }
-
 
 }
 

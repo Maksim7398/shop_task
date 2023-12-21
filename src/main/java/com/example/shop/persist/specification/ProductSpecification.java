@@ -13,7 +13,7 @@ import java.util.List;
 public class ProductSpecification {
     public Specification<ProductEntity> getProduct(SearchFilter filter) {
         return ((root, query, criteriaBuilder) -> {
-            List<Predicate> predicates = new ArrayList<>();
+            final List<Predicate> predicates = new ArrayList<>();
             if (filter.getTitle() != null) {
                 predicates.add(criteriaBuilder.like(root.get("title"), "%" + filter.getTitle() + "%"));
             }
