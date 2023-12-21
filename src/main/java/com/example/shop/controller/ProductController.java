@@ -11,6 +11,7 @@ import com.example.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -27,8 +28,8 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/products")
-    public List<GetProductResponse> listProducts(@RequestParam("offset") Integer offset,@RequestParam("limit") Integer limit) {
-        return mapper.listProductToResponse(service.productList(offset,limit));
+    public List<GetProductResponse> listProducts(Pageable pageable) {
+        return mapper.listProductToResponse(service.productList(pageable));
     }
 
     @PostMapping("/product")
@@ -56,8 +57,9 @@ public class ProductController {
     public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDtoToResponse(service.updateProduct(id, mapper.convertFromUpdateToImmutableRequest(product)));
     }
+
     @GetMapping(value = {"/product/search"})
-    public List<GetProductResponse> getProductByTitle(@RequestBody SearchFilter searchFilter){
+    public List<GetProductResponse> getProductByTitle(@RequestBody SearchFilter searchFilter) {
         return mapper.listProductToResponse(service.findProductEntityToFilter(searchFilter));
     }
 

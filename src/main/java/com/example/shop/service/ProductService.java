@@ -4,12 +4,13 @@ import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.SearchFilter;
 import com.example.shop.model.ProductDto;
 import com.example.shop.service.request.ImmutableUpdateProductRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface ProductService {
-    List<ProductDto> productList(Integer offset,Integer limit);
+    List<ProductDto> productList(Pageable pageable);
 
     UUID save(CreateProductRequest request);
 

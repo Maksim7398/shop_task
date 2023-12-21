@@ -14,7 +14,6 @@ import com.example.shop.service.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -33,9 +32,8 @@ public class ProductServiceImpl implements ProductService {
 
     @CheckTime
     @Override
-    public List<ProductDto> productList(Integer offset, Integer limit) {
-        Pageable nextPage = PageRequest.of(offset, limit);
-        Page<ProductEntity> allProduct = repository.findAll(nextPage);
+    public List<ProductDto> productList(Pageable pageable) {
+        Page<ProductEntity> allProduct = repository.findAll(pageable);
         if (allProduct.getContent().isEmpty()) {
             throw new ProductNotFoundException("list products is empty");
         } else {
@@ -51,7 +49,6 @@ public class ProductServiceImpl implements ProductService {
             throw new ArticleAlreadyExistsException("продукт с таким артикулом уже существует");
         }
         final ProductEntity productEntity = mapper.createProductRequest(request);
-        productEntity.setIsAvailable(false);
         productEntity.setLastQuantityChange(LocalDateTime.now());
         repository.save(productEntity);
         log.info(productEntity + "saved");

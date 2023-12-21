@@ -49,7 +49,7 @@ class ProductServiceImplTest {
     public void getProductList_returnProductNotFoundException_test() {
         pageable = PageRequest.of(0, 1);
         when(repositoryMock.findAll(pageable)).thenReturn(Page.empty());
-        assertThrows(ProductNotFoundException.class, () -> underTest.productList(0, 1));
+        assertThrows(ProductNotFoundException.class, () -> underTest.productList(pageable));
     }
 
     @Test
@@ -59,7 +59,7 @@ class ProductServiceImplTest {
         final List<ProductEntity> stubListEntities = List.of(stubEntity);
         final Page<ProductEntity> expected = new PageImpl<>(stubListEntities, pageable, stubListEntities.size());
         when(repositoryMock.findAll(pageable)).thenReturn(expected);
-        underTest.productList(0, 1);
+        underTest.productList(pageable);
 
         verify(productMapperMock).convertListEntityToListDto(stubListEntities);
         verify(repositoryMock).findAll(pageable);
