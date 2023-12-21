@@ -16,6 +16,10 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,22 +42,27 @@ class ProductServiceImplTest {
     private ProductServiceImpl underTest;
     private ProductEntity stubEntity;
 
+    @Mock
+    private Pageable pageable;
+
     @Test
     public void getProductList_returnProductNotFoundException_test() {
-        when(repositoryMock.findAll()).thenReturn(List.of());
-
-        assertThrows(ProductNotFoundException.class, () -> underTest.productList());
+        pageable = PageRequest.of(0, 1);
+        when(repositoryMock.findAll(pageable)).thenReturn(Page.empty());
+        assertThrows(ProductNotFoundException.class, () -> underTest.productList(pageable));
     }
 
     @Test
     public void getProductList_returnExpected_test() {
+        pageable = PageRequest.of(0, 1);
         stubEntity = ProductEntityBuilder.aProductEntity().build();
-        List<ProductEntity> expected = List.of(stubEntity);
-        when(repositoryMock.findAll()).thenReturn(expected);
-        underTest.productList();
+        final List<ProductEntity> stubListEntities = List.of(stubEntity);
+        final Page<ProductEntity> expected = new PageImpl<>(stubListEntities, pageable, stubListEntities.size());
+        when(repositoryMock.findAll(pageable)).thenReturn(expected);
+        underTest.productList(pageable);
 
-        verify(productMapperMock).listProduct(expected);
-        verify(repositoryMock).findAll();
+        verify(productMapperMock).convertListEntityToListDto(stubListEntities);
+        verify(repositoryMock).findAll(pageable);
     }
 
     @Test
@@ -152,5 +161,4 @@ class ProductServiceImplTest {
 
         assertEquals(expected, actual.getPrice());
     }
-
 }

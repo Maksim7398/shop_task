@@ -1,16 +1,20 @@
 package com.example.shop.service;
 
 import com.example.shop.controller.request.CreateProductRequest;
+import com.example.shop.controller.request.SearchFilter;
 import com.example.shop.exception.ArticleAlreadyExistsException;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.repository.ProductRepository;
+import com.example.shop.persist.specification.ProductSpecification;
 import com.example.shop.service.annotation.CheckTime;
 import com.example.shop.service.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,15 +28,18 @@ import java.util.UUID;
 public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
+    private final ProductSpecification specification;
 
-    @Override
     @CheckTime
-    public List<ProductDto> productList() {
-        List<ProductEntity> all = repository.findAll();
-        if (all.isEmpty()) {
+    @Override
+    public List<ProductDto> productList(Pageable pageable) {
+        Page<ProductEntity> allProduct = repository.findAll(pageable);
+        if (allProduct.getContent().isEmpty()) {
             throw new ProductNotFoundException("list products is empty");
+        } else {
+            allProduct.getContent();
         }
-        return mapper.listProduct(all);
+        return mapper.convertListEntityToListDto(allProduct.getContent());
     }
 
     @Override
@@ -80,6 +87,7 @@ public class ProductServiceImpl implements ProductService {
         if (repository.existsByArticle(request.getArticle()) && !request.getArticle().equals(productEntity.getArticle())) {
             throw new ArticleAlreadyExistsException("продукт с таким артикулом уже существует");
         }
+        productEntity.setIsAvailable(request.getIsAvailable());
         productEntity.setArticle(request.getArticle());
         productEntity.setTitle(request.getTitle());
         productEntity.setQuantity(request.getQuantity());
@@ -101,6 +109,13 @@ public class ProductServiceImpl implements ProductService {
             repository.save(productEntity);
         }
     }
+
+    @CheckTime
+    @Override
+    public List<ProductDto> findProductEntityToFilter(SearchFilter filter) {
+        return mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+    }
+
 }
 
 

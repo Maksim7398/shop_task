@@ -25,4 +25,6 @@ public class CreateProductRequest {
     private BigDecimal price;
     @NotNull(message = "quantity must not be null")
     private Integer quantity;
+    @NotNull
+    private Boolean isAvailable;
 }

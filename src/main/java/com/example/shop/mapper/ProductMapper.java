@@ -15,11 +15,9 @@ import java.util.List;
 public interface ProductMapper {
     ProductEntity createProductRequest(CreateProductRequest createProductRequest);
 
-    ProductEntity convertFromDtoInEntity(ProductDto productDto);
-
     ProductDto convertFromEntityToDto(ProductEntity product);
 
-    List<ProductDto> listProduct(List<ProductEntity> productEntityList);
+    List<ProductDto> convertListEntityToListDto(List<ProductEntity> productEntityList);
 
     List<GetProductResponse> listProductToResponse(List<ProductDto> productDto);
 
@@ -28,7 +26,5 @@ public interface ProductMapper {
     UpdateProductResponse convertFromDtoToResponse(ProductDto productDto);
 
     ImmutableUpdateProductRequest convertFromUpdateToImmutableRequest(UpdateProductRequest request);
-
-    ImmutableUpdateProductRequest convertForUpdateRequest(ProductDto productDto);
 
 }

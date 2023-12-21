@@ -1,6 +1,7 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateProductRequest;
+import com.example.shop.controller.request.SearchFilter;
 import com.example.shop.controller.request.UpdateProductRequest;
 import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.controller.response.UpdateProductResponse;
@@ -10,6 +11,7 @@ import com.example.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,8 @@ public class ProductController {
     private final ProductMapper mapper;
 
     @GetMapping("/products")
-    public List<GetProductResponse> listProducts() {
-        return mapper.listProductToResponse(service.productList());
+    public List<GetProductResponse> listProducts(Pageable pageable) {
+        return mapper.listProductToResponse(service.productList(pageable));
     }
 
     @PostMapping("/product")
@@ -55,4 +57,10 @@ public class ProductController {
     public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDtoToResponse(service.updateProduct(id, mapper.convertFromUpdateToImmutableRequest(product)));
     }
+
+    @GetMapping(value = {"/product/search"})
+    public List<GetProductResponse> getProductByTitle(@RequestBody SearchFilter searchFilter) {
+        return mapper.listProductToResponse(service.findProductEntityToFilter(searchFilter));
+    }
+
 }
