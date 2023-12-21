@@ -15,7 +15,9 @@ import java.util.List;
 public interface ProductMapper {
     ProductEntity createProductRequest(CreateProductRequest createProductRequest);
 
-    ProductDto getProduct(ProductEntity product);
+    ProductEntity convertFromDtoInEntity(ProductDto productDto);
+
+    ProductDto convertFromEntityToDto(ProductEntity product);
 
     List<ProductDto> listProduct(List<ProductEntity> productEntityList);
 
