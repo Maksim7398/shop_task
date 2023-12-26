@@ -43,6 +43,7 @@ public class ProductServiceImpl implements ProductService {
             allProduct.getContent();
         }
         log.debug(allProduct.getContent().get(0).getTitle());
+
         return mapper.convertListEntityToListDto(allProduct.getContent());
     }
 
@@ -115,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
             BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(String.valueOf(percent))).add(productEntity.getPrice());
             productEntity.setPrice(price);
             repository.save(productEntity);
-            log.debug(price.toString() + " sum exchange");
+            log.debug(price + " sum exchange");
         }
         Thread.sleep(10000);
         log.info("Scheduled sleep finish");

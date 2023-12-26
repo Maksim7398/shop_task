@@ -149,7 +149,7 @@ class ProductServiceImplTest {
     }
 
     @Test
-    public void updatePriceForProduct_checkChangedPrice_test() {
+    public void updatePriceForProduct_checkChangedPrice_test() throws InterruptedException {
         stubEntity = ProductEntityBuilder.aProductEntity().build();
         when(repositoryMock.findAll()).thenReturn(List.of(stubEntity));
         final BigDecimal expected = stubEntity.getPrice().multiply(new BigDecimal("0.1")).add(stubEntity.getPrice());
