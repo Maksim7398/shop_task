@@ -23,25 +23,20 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
-
     private final ProductService service;
     private final ProductMapper mapper;
-
     @GetMapping("/products")
     public List<GetProductResponse> listProducts(Pageable pageable) {
         return mapper.listProductToResponse(service.productList(pageable));
     }
-
     @PostMapping("/product")
     public UUID createProduct(@RequestBody @Valid CreateProductRequest createProductRequest) {
         return service.save(createProductRequest);
     }
-
     @GetMapping("/product/{id}")
     public GetProductResponse getProduct(@PathVariable UUID id) {
         return mapper.convertFromDto(service.getProductById(id));
     }
-
     @DeleteMapping("/product/{id}")
     public ResponseEntity<Void> deleteByID(@PathVariable UUID id) {
         try {
@@ -52,12 +47,10 @@ public class ProductController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
     }
-
     @PutMapping("/product/{id}")
     public UpdateProductResponse updateProduct(@RequestBody UpdateProductRequest product, @PathVariable UUID id) {
         return mapper.convertFromDtoToResponse(service.updateProduct(id, mapper.convertFromUpdateToImmutableRequest(product)));
     }
-
     @GetMapping(value = {"/product/search"})
     public List<GetProductResponse> getProductByTitle(@RequestBody SearchFilter searchFilter) {
         return mapper.listProductToResponse(service.findProductEntityToFilter(searchFilter));

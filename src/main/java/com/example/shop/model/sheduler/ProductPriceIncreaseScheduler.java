@@ -19,7 +19,7 @@ public class ProductPriceIncreaseScheduler {
     private Double percent;
 
     @Scheduled(fixedDelayString = "${app.scheduling.period}")
-    public void priceIncrease() {
+    public void priceIncrease() throws InterruptedException {
         service.updatePriceForProduct(percent);
     }
 }

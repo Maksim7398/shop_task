@@ -20,7 +20,7 @@ public interface ProductService {
 
     ProductDto updateProduct(final UUID id, final ImmutableUpdateProductRequest request);
 
-    void updatePriceForProduct(final Double newPrice);
+    void updatePriceForProduct(final Double newPrice) throws InterruptedException;
 
     List<ProductDto> findProductEntityToFilter(SearchFilter filter);
 
