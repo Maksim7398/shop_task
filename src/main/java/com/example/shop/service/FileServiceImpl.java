@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.Arrays;
 import java.util.List;
@@ -28,10 +29,10 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public File getFile(String fileName) {
+    public File getFile(String fileName) throws FileNotFoundException {
         final File[] files = FOLDER.listFiles();
         Optional<File> getFile = Arrays.stream(files).filter(file -> file.getName().contains(fileName)).findFirst();
-        return getFile.get();
+        return getFile.orElseThrow(() -> new FileNotFoundException("Файла с таким именем не существует"));
     }
 
     @Override
