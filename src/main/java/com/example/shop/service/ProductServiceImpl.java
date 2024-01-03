@@ -32,6 +32,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
     private final ProductSpecification specification;
+    private final ResultProductFilterWriteDocument document;
 
     @CheckTime
     @Override
@@ -125,9 +126,12 @@ public class ProductServiceImpl implements ProductService {
     @CheckTime
     @Override
     public List<ProductDto> findProductEntityToFilter(SearchFilter filter) {
-        return mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+        List<ProductDto> product = mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+        document.addProductToDocument(product);
+        return product;
     }
-
 }
+
+
 
 
