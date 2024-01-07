@@ -1,4 +1,4 @@
-package com.example.shop.controller.request;
+package com.example.shop.controller.product.request;
 
 import com.example.shop.model.Category;
 import jakarta.validation.constraints.NotBlank;
@@ -21,4 +21,6 @@ public class UpdateProductRequest {
     private BigDecimal price;
     @NotNull(message = "quantity must not be blank")
     private Integer quantity;
+    @NotNull
+    private Boolean isAvailable;
 }

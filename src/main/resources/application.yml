@@ -16,6 +16,7 @@ spring:
   liquibase:
     enabled: true
     change-log: db/changelog/db.changelog-master.xml
+
 logging:
   level:
     root: INFO
@@ -23,7 +24,6 @@ logging:
     com.example.shop: DEBUG
 app:
   scheduling:
-      enabled: true
-      period: 30000
-      percent: 0.1
-
+    enabled: true
+    period: 10000
+    percent: 0.1

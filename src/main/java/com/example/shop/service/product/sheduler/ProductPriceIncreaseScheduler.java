@@ -1,6 +1,6 @@
-package com.example.shop.model.sheduler;
+package com.example.shop.service.product.sheduler;
 
-import com.example.shop.service.ProductService;
+import com.example.shop.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ public class ProductPriceIncreaseScheduler {
     private Double percent;
 
     @Scheduled(fixedDelayString = "${app.scheduling.period}")
-    public void priceIncrease() {
+    public void priceIncrease() throws InterruptedException {
         service.updatePriceForProduct(percent);
     }
 }

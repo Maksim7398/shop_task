@@ -1,9 +1,12 @@
 package com.example.shop.exception;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+
 @Data
+@Builder
 public class ErrorDetails {
 
     private final String className;
@@ -11,4 +14,5 @@ public class ErrorDetails {
     private final String message;
 
     private final LocalDateTime timeStamp;
+
 }

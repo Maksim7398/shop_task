@@ -1,6 +1,7 @@
 package com.example.shop.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 public enum Category {
     BREAD("Хлеб"),
     VEGETABLES("Овощи"),
@@ -14,7 +15,7 @@ public enum Category {
     @JsonCreator
     public static Category fromName(String name) {
         for (Category category : Category.values()) {
-            if (category.name().equals(name)) {
+            if (category.name().equals(name) || category.label.equals(name)) {
                 return category;
             }
         }

@@ -1,10 +1,12 @@
-package com.example.shop.service.request;
+package com.example.shop.service.product.request;
 
 import com.example.shop.model.Category;
+import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
 @Data
+@Builder
 public class ImmutableUpdateProductRequest {
 
     private String article;
@@ -18,4 +20,6 @@ public class ImmutableUpdateProductRequest {
     private BigDecimal price;
 
     private Integer quantity;
+
+    private Boolean isAvailable;
 }
