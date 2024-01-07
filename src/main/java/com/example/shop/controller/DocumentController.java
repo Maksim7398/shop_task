@@ -13,7 +13,7 @@ public class DocumentController {
 
     private final FileService fileService;
 
-    @GetMapping("/file_names")
+    @GetMapping("/documents")
     public List<String> getFileNames(){
        return fileService.getFilenames();
     }
