@@ -26,4 +26,6 @@ app:
       enabled: true
       period: 10000
       percent: 0.1
+  document:
+    path: src/main/resources/reports
 

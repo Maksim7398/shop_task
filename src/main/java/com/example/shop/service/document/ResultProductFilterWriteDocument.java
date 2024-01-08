@@ -1,4 +1,4 @@
-package com.example.shop.service;
+package com.example.shop.service.document;
 
 import com.example.shop.model.ProductDto;
 import org.apache.poi.ss.usermodel.Cell;
@@ -6,10 +6,12 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -18,19 +20,21 @@ import java.util.List;
 
 @Service
 public class ResultProductFilterWriteDocument {
-    final String PATH_FILE = "C:\\Users\\user\\Downloads\\Shop_task1\\Shop_task1\\src\\main\\resources\\file_after_filter";
+    @Value("${app.document.path}")
+    private String PATH_FILE;
 
     public void addProductToDocument(List<ProductDto> productDto) {
         final String filename = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd_hh-mm-ss")) + ".xlsx";
-        final File file = new File(PATH_FILE + "/" + filename);
+        final File file = new File(PATH_FILE);
+
         try (final Workbook workbook = new XSSFWorkbook()) {
             final Sheet sheet = workbook.createSheet();
             final Row row = sheet.createRow(0);
-            final Object[] array = Arrays.stream(ProductDto.class.getDeclaredFields()).map(Field::getName).
-                    toArray();
+            final String[] array = Arrays.stream(ProductDto.class.getDeclaredFields()).map(Field::getName).map(Object::toString).toArray(String[]::new);
+
             for (int i = 0; i < array.length; i++) {
                 Cell cell = row.createCell(i);
-                cell.setCellValue(array[i].toString());
+                cell.setCellValue(array[i]);
             }
             int count = 1;
             for (ProductDto product : productDto) {
@@ -46,13 +50,14 @@ public class ResultProductFilterWriteDocument {
                 row1.createCell(8).setCellValue(product.getCreateDate().toString());
                 row1.createCell(9).setCellValue(product.getIsAvailable());
             }
-
-            try (final FileOutputStream outputStream = new FileOutputStream(file)) {
-                workbook.write(outputStream);
+            if (!file.exists()) {
+                file.mkdirs();
+                try (final FileOutputStream outputStream = new FileOutputStream(file + "/" + filename)) {
+                    workbook.write(outputStream);
+                }
             }
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.shop.controller;
 
-import com.example.shop.service.FileService;
+import com.example.shop.service.document.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.core.io.UrlResource;
@@ -25,7 +25,7 @@ public class DocumentController {
 
     private final FileService fileService;
 
-    @GetMapping("/file_names")
+    @GetMapping("/documents")
     public List<String> getFileNames() {
         return fileService.getFilenames();
     }

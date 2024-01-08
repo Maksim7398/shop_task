@@ -1,8 +1,7 @@
-package com.example.shop.service;
+package com.example.shop.service.document;
 
 import com.example.shop.service.annotation.CheckTime;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,25 +10,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.multipart.MultipartFile;
+
 @Service
 public class FileServiceImpl implements FileService {
 
-    private final File FOLDER = new File("C:\\Users\\user\\Downloads\\Shop_task1\\Shop_task1\\src\\main\\resources\\file_after_filter");
+    @Value("${app.document.path}")
+    private String PATH_FILE;
 
-    @Override
     @CheckTime
     public List<String> getFilenames() {
-        if (FOLDER.isDirectory() && FOLDER.exists()) {
-            final File[] files = FOLDER.listFiles();
+        final File folder = new File(PATH_FILE + "/");
+        if (folder.isDirectory() && folder.exists()) {
+            final File[] files = folder.listFiles();
             final List<String> listFiles = Arrays.stream(files).filter(file -> file.isFile() && file != null)
                     .map(File::getName).toList();
             return listFiles;
         }
-        return null;
+        return List.of();
     }
 
     @Override
     public File getFile(String fileName) throws FileNotFoundException {
+        final File FOLDER = new File(PATH_FILE);
         final File[] files = FOLDER.listFiles();
         Optional<File> getFile = Arrays.stream(files).filter(file -> file.getName().contains(fileName)).findFirst();
         return getFile.orElseThrow(() -> new FileNotFoundException("Файла с таким именем не существует"));
@@ -37,6 +41,7 @@ public class FileServiceImpl implements FileService {
 
     @Override
     public String uploadFile(MultipartFile file) {
+        final File FOLDER = new File(PATH_FILE);
         try (final FileOutputStream outputStream = new FileOutputStream(FOLDER + File.separator + file.getOriginalFilename())) {
             byte[] bytes = file.getBytes();
             outputStream.write(bytes);
