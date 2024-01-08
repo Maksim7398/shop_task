@@ -42,8 +42,6 @@ public class ProductServiceImpl implements ProductService {
         } else {
             allProduct.getContent();
         }
-        log.debug(allProduct.getContent().get(0).getTitle());
-
         return mapper.convertListEntityToListDto(allProduct.getContent());
     }
 
@@ -108,9 +106,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @CheckTime
     @Transactional
-    @Lock(LockModeType.OPTIMISTIC)
     public void updatePriceForProduct(final Double percent) throws InterruptedException {
-        log.info("Scheduled sleep start");
+        log.info("Scheduled job start");
         List<ProductEntity> list = repository.findAll();
         for (ProductEntity productEntity : list) {
             BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(String.valueOf(percent))).add(productEntity.getPrice());
@@ -119,7 +116,7 @@ public class ProductServiceImpl implements ProductService {
             log.debug(price + " sum exchange");
         }
         Thread.sleep(10000);
-        log.info("Scheduled sleep finish");
+        log.info("Scheduled job finish");
     }
 
     @CheckTime
