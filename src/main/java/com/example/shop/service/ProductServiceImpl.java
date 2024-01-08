@@ -11,12 +11,10 @@ import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.specification.ProductSpecification;
 import com.example.shop.service.annotation.CheckTime;
 import com.example.shop.service.request.ImmutableUpdateProductRequest;
-import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository repository;
     private final ProductMapper mapper;
     private final ProductSpecification specification;
+    private final ResultProductFilterWriteDocument document;
 
     @CheckTime
     @Override
@@ -42,6 +41,8 @@ public class ProductServiceImpl implements ProductService {
         } else {
             allProduct.getContent();
         }
+        log.debug(allProduct.getContent().get(0).getTitle());
+
         return mapper.convertListEntityToListDto(allProduct.getContent());
     }
 
@@ -122,9 +123,12 @@ public class ProductServiceImpl implements ProductService {
     @CheckTime
     @Override
     public List<ProductDto> findProductEntityToFilter(SearchFilter filter) {
-        return mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+        List<ProductDto> product = mapper.convertListEntityToListDto(repository.findAll(specification.getProduct(filter)));
+        document.addProductToDocument(product);
+        return product;
     }
-
 }
+
+
 
 
