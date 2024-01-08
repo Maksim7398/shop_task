@@ -21,4 +21,6 @@ public class UpdateProductRequest {
     private BigDecimal price;
     @NotNull(message = "quantity must not be blank")
     private Integer quantity;
+    @NotNull
+    private Boolean isAvailable;
 }

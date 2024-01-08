@@ -24,6 +24,8 @@ logging:
 app:
   scheduling:
       enabled: true
-      period: 30000
+      period: 10000
       percent: 0.1
+  document:
+    path: src/main/resources/reports
 

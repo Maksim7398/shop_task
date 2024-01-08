@@ -21,4 +21,5 @@ public class GetProductResponse {
     @JsonFormat(locale = "ru", pattern = "dd MMMM yyyy")
     private final LocalDateTime lastQuantityChange;
     private final LocalDateTime createDate;
+    private final Boolean isAvailable;
 }

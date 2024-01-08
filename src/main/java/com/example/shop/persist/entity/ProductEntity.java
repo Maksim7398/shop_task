@@ -9,7 +9,10 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
@@ -19,6 +22,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "product")
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -40,5 +46,7 @@ public class ProductEntity {
     @CreationTimestamp
     @Column(name = "create_date")
     private LocalDateTime createDate;
+    @Column(name = "is_available")
+    private Boolean isAvailable;
 
 }
