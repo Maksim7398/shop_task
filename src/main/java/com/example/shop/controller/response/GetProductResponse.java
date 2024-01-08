@@ -11,15 +11,15 @@ import java.util.UUID;
 
 @Data
 public class GetProductResponse {
-    private final UUID id;
-    private final String article;
-    private final String title;
-    private final String description;
-    private final Category category;
-    private final BigDecimal price;
+    private UUID id;
+    private String article;
+    private String title;
+    private String description;
+    private Category category;
+    private BigDecimal price;
     private Integer quantity;
     @JsonFormat(locale = "ru", pattern = "dd MMMM yyyy")
-    private final LocalDateTime lastQuantityChange;
-    private final LocalDateTime createDate;
-    private final Boolean isAvailable;
+    private LocalDateTime lastQuantityChange;
+    private LocalDateTime createDate;
+    private Boolean isAvailable;
 }

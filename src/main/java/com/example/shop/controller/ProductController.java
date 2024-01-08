@@ -37,7 +37,7 @@ public class ProductController {
     }
 
     @GetMapping("/product/{id}")
-    public GetProductResponse getProduct(@PathVariable UUID id) {
+    public GetProductResponse getProductById(@PathVariable UUID id) {
         return mapper.convertFromDto(service.getProductById(id));
     }
 
