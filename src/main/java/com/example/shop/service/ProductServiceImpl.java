@@ -11,11 +11,14 @@ import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.specification.ProductSpecification;
 import com.example.shop.service.annotation.CheckTime;
 import com.example.shop.service.request.ImmutableUpdateProductRequest;
+import jakarta.persistence.LockModeType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -102,12 +105,18 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @CheckTime
-    public void updatePriceForProduct(final Double percent) {
-        for (ProductEntity productEntity : repository.findAll()) {
+    @Transactional
+    public void updatePriceForProduct(final Double percent) throws InterruptedException {
+        log.info("Scheduled job start");
+        List<ProductEntity> list = repository.findAll();
+        for (ProductEntity productEntity : list) {
             BigDecimal price = productEntity.getPrice().multiply(new BigDecimal(String.valueOf(percent))).add(productEntity.getPrice());
             productEntity.setPrice(price);
             repository.save(productEntity);
+            log.debug(price + " sum exchange");
         }
+        Thread.sleep(10000);
+        log.info("Scheduled job finish");
     }
 
     @CheckTime
