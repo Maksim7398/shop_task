@@ -27,5 +27,5 @@ app:
       period: 10000
       percent: 0.1
   document:
-    path: src/main/resources/file_after_filter
+    path: src/main/resources/reports
 
