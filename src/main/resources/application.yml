@@ -4,8 +4,9 @@ server:
   port: 8085
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/product_store
-    username: user
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432}/${DATABASE_NAME:product-store}
+    username: ${DATABASE_USERNAME:user}
+    password: ${DATABASE_PASSWORD:user}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -23,9 +24,16 @@ logging:
     com.example.shop: DEBUG
 app:
   scheduling:
-      enabled: true
-      period: 10000
-      percent: 0.1
+    enabled: false
+    period: 10000
+    percent: 0.1
   document:
     path: src/main/resources/reports
+
+service:
+  path:
+    url: http://localhost:8080/my-app
+
+#      docker run -p 8888:8085 -e DATABASE_URL=jdbc:postgresql://host.docker.internal first-service
+
 
