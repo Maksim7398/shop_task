@@ -29,6 +29,9 @@ app:
     percent: 0.1
   document:
     path: src/main/resources/reports
+interaction:
+  rate:
+    stub: false
 
 service:
   path:
