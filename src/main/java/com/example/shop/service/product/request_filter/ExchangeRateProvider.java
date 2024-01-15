@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -21,8 +20,11 @@ public class ExchangeRateProvider {
 
     private final ExchangeServiceClient exchangeService;
 
+    private final CurrencyValue currencyValue;
+
     public Double getExchangeValue() {
-        return Optional.ofNullable(getExchangeRateFromService()).orElseGet(this::getExchangeRateFromFile);
+        return Optional.ofNullable(getExchangeRateFromService())
+                .orElseGet(this::getExchangeRateFromFile);
     }
 
     private @Nullable Double getExchangeRateFromFile() {
@@ -32,13 +34,13 @@ public class ExchangeRateProvider {
             final ExchangeRateValue exchangeRateValue =
                     objectMapper.readValue(resource.getInputStream(),
                             ExchangeRateValue.class);
-            return exchangeRateValue.getExchangeRate();
+            return currencyValue.getRate(exchangeRateValue);
         } catch (IOException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     private @Nullable Double getExchangeRateFromService() {
-        return Objects.requireNonNull(exchangeService.getExchangeRate()).getExchangeRate();
+        return currencyValue.getRate(exchangeService.getExchangeRate());
     }
 }

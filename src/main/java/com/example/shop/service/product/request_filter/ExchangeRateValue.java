@@ -6,5 +6,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ExchangeRateValue {
-   private Double exchangeRate;
+
+    private Double RUB;
+    private Double USD;
+    private Double EUR;
+
 }
