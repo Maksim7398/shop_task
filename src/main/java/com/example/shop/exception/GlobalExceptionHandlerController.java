@@ -7,7 +7,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
@@ -40,7 +39,7 @@ public class GlobalExceptionHandlerController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDetails> handleFileNotFoundException(FileNotFoundException exception) {
+    public ResponseEntity<ErrorDetails> handleStorageException(StorageException exception) {
         ErrorDetails errorDetails = new ErrorDetails(exception.getClass().getSimpleName(), exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
