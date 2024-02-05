@@ -1,4 +1,4 @@
-package com.example.shop.service;
+package com.example.shop.service.document;
 
 import com.example.shop.model.ProductDto;
 import org.apache.poi.ss.usermodel.Cell;
@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+
 @Service
 public class ResultProductFilterWriteDocument {
     @Value("${app.document.path}")
@@ -60,5 +61,3 @@ public class ResultProductFilterWriteDocument {
         }
     }
 }
-
-
