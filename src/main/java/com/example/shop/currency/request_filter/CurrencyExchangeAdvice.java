@@ -39,7 +39,7 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
 
         Optional.ofNullable(body)
                 .ifPresent(b -> b.setPrice(b.getPrice()
-                .divide(exchangeRateProvider.getExchangeRate(), 2, RoundingMode.HALF_UP)));
+                .divide(exchangeRateProvider.getExchangeRate(), RoundingMode.HALF_UP)));
 
         return body;
     }

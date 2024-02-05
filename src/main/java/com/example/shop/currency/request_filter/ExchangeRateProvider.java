@@ -19,6 +19,7 @@ public class ExchangeRateProvider {
             final File file = new File("src/main/resources/exchangeRate.json");
             final ObjectMapper objectMapper = new ObjectMapper();
             final ExchangeRateValue exchangeRateValue = objectMapper.readValue(file, ExchangeRateValue.class);
+
             return BigDecimal.valueOf(exchangeRateValue.getExchangeRate());
         } catch (IOException e) {
             log.debug(e.getMessage());
