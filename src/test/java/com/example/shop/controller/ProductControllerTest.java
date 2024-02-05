@@ -1,20 +1,12 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateProductRequest;
-import com.example.shop.mapper.ProductMapper;
 import com.example.shop.model.CreateProductRequestBuilder;
-import com.example.shop.service.ProductServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import lombok.RequiredArgsConstructor;
-import org.aspectj.lang.annotation.Before;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -24,11 +16,6 @@ import org.springframework.test.context.ActiveProfiles;
 public class ProductControllerTest {
     @LocalServerPort
     private int port;
-
-    @MockBean
-    private ProductServiceImpl productService;
-    @MockBean
-    private ProductMapper productMapper;
 
     @Test
     public void create_whenRequestGet_thenOK() throws JsonProcessingException {
@@ -42,8 +29,9 @@ public class ProductControllerTest {
                 .then()
                 .statusCode(200);
     }
+
     @Test
-    public void create_whenRequestGetWithNull_thenBadRequest(){
+    public void create_whenRequestGetWithNull_thenBadRequest() {
         CreateProductRequest createProductRequest = CreateProductRequestBuilder.aCreateProductRequest()
                 .withTitle(null)
                 .build();
