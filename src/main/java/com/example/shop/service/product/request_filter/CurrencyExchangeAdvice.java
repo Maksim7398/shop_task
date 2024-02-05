@@ -2,7 +2,6 @@ package com.example.shop.service.product.request_filter;
 
 import com.example.shop.controller.response.GetProductResponse;
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -28,9 +27,8 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
     }
 
     @Override
-    @SneakyThrows
     public GetProductResponse beforeBodyWrite(@Nullable GetProductResponse body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
-        final BigDecimal price = body.getPrice().divide(new BigDecimal(exchangeRate.getExchangeRate()), 2, RoundingMode.HALF_UP);
+        final BigDecimal price = Objects.requireNonNull(body).getPrice().divide(BigDecimal.valueOf(exchangeRate.getExchangeRate()), 2, RoundingMode.HALF_UP);
         body.setPrice(price);
 
         return body;
