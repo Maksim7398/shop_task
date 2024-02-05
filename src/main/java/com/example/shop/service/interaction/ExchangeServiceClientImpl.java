@@ -1,6 +1,6 @@
 package com.example.shop.service.interaction;
 
-import com.example.shop.service.product.request_filter.ExchangeRateValue;
+import com.example.shop.currency.request_filter.ExchangeRateValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -17,17 +17,20 @@ import org.springframework.web.client.RestTemplate;
 public class ExchangeServiceClientImpl implements ExchangeServiceClient {
 
     private final RestTemplate restTemplate;
+
     @Override
     @Nullable
     @Cacheable(unless = "#result == null", value = "exchangeValue")
     public ExchangeRateValue getExchangeRate() {
         try {
-            String uri = "/exchangeValue";
-            ExchangeRateValue exchangeRateValue = restTemplate.getForObject(uri, ExchangeRateValue.class);
+            final String uri = "/exchangeValue";
+            final ExchangeRateValue exchangeRateValue = restTemplate.getForObject(uri, ExchangeRateValue.class);
             log.info("exchange rate value from service: " + exchangeRateValue.getExchangeRate().toString());
+
             return exchangeRateValue;
         } catch (Exception ex) {
             log.error(ex.getMessage());
+
             return null;
         }
     }
