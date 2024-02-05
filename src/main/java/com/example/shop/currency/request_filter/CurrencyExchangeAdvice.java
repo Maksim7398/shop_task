@@ -12,7 +12,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Optional;
 
@@ -40,8 +39,7 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
 
         Optional.ofNullable(body)
                 .ifPresent(b -> b.setPrice(b.getPrice()
-                .divide(BigDecimal
-                .valueOf(exchangeRateProvider.getExchangeRate()), 2, RoundingMode.HALF_UP)));
+                .divide(exchangeRateProvider.getExchangeRate(), 2, RoundingMode.HALF_UP)));
 
         return body;
     }

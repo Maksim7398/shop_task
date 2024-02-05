@@ -6,20 +6,24 @@ import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 @Component
 @Slf4j
 public class ExchangeRateProvider {
 
-    public Double getExchangeRate() {
+    private final BigDecimal DEFAULT_EXCHANGE_RATE = new BigDecimal("1.0");
+
+    public BigDecimal getExchangeRate() {
         try {
             final File file = new File("src/main/resources/exchangeRate.json");
             final ObjectMapper objectMapper = new ObjectMapper();
             final ExchangeRateValue exchangeRateValue = objectMapper.readValue(file, ExchangeRateValue.class);
-            return exchangeRateValue.getExchangeRate();
+            return BigDecimal.valueOf(exchangeRateValue.getExchangeRate());
         } catch (IOException e) {
             log.debug(e.getMessage());
-            return 1.0;
+
+            return DEFAULT_EXCHANGE_RATE;
         }
     }
 }
