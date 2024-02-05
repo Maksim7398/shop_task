@@ -1,12 +1,14 @@
-package com.example.shop.service.product.request_filter;
+package com.example.shop.currency.request_filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.IOException;
 
 @Component
+@Slf4j
 public class ExchangeRateProvider {
 
     public Double getExchangeRate() {
@@ -16,7 +18,8 @@ public class ExchangeRateProvider {
             final ExchangeRateValue exchangeRateValue = objectMapper.readValue(file, ExchangeRateValue.class);
             return exchangeRateValue.getExchangeRate();
         } catch (IOException e) {
-            throw new RuntimeException(e.getMessage());
+            log.debug(e.getMessage());
+            return 1.0;
         }
     }
 }
