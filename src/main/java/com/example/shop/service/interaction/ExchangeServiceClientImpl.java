@@ -24,12 +24,10 @@ public class ExchangeServiceClientImpl implements ExchangeServiceClient {
     public ExchangeRateValue getExchangeRate() {
         try {
             final String uri = "/exchangeValue";
-            final ExchangeRateValue exchangeRateValue = restTemplate.getForObject(uri, ExchangeRateValue.class);
-            log.info("exchange rate value from service: " + exchangeRateValue.getExchangeRate().toString());
 
-            return exchangeRateValue;
+            return restTemplate.getForObject(uri, ExchangeRateValue.class);
         } catch (Exception ex) {
-            log.error(ex.getMessage());
+            log.error("Ошибка при подключению к сервису: " + ex.getMessage());
 
             return null;
         }

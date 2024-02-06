@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class CacheConfig {
 
     @Value("${app.cache.expireAfterAccess}")
-    private int timeCache;
+    private Integer timeCache;
 
     @Bean
     public CacheManager cacheManager() {

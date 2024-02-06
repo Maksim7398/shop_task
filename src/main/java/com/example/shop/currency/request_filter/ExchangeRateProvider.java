@@ -36,15 +36,18 @@ public class ExchangeRateProvider {
             log.info("value from file: " + exchangeRateValue.getExchangeRate());
             return BigDecimal.valueOf(exchangeRateValue.getExchangeRate());
         } catch (IOException e) {
-            log.debug(e.getMessage());
+            log.error("Ошибка при чтении из файла: " + e.getMessage());
 
             return DEFAULT_EXCHANGE_RATE;
         }
     }
 
     private @Nullable BigDecimal getExchangeRateFromService() {
+        log.info("exchange rate value from service: " + exchangeService.getExchangeRate().getExchangeRate());
+
         return Optional.ofNullable(exchangeService.getExchangeRate())
                 .map(ExchangeRateValue::getExchangeRate)
-                .map(BigDecimal::valueOf).orElse(null);
+                .map(BigDecimal::valueOf)
+                .orElse(null);
     }
 }
