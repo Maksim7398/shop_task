@@ -1,6 +1,6 @@
 package com.example.shop.model.sheduler;
 
-import com.example.shop.service.ProductService;
+import com.example.shop.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import lombok.extern.slf4j.Slf4j;

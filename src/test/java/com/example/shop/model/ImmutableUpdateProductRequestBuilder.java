@@ -1,6 +1,7 @@
 package com.example.shop.model;
 
-import com.example.shop.service.request.ImmutableUpdateProductRequest;
+
+import com.example.shop.service.product.request.ImmutableUpdateProductRequest;
 
 import java.math.BigDecimal;
 

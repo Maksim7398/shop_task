@@ -31,11 +31,10 @@ public class ExchangeRateProvider {
             final Resource resource = new ClassPathResource("exchangeRate.json");
             final ObjectMapper objectMapper = new ObjectMapper();
             final ExchangeRateValue exchangeRateValue =
-                    objectMapper.readValue(resource.getInputStream(),
-                            ExchangeRateValue.class);
+                    objectMapper.readValue(resource.getInputStream(), ExchangeRateValue.class);
             log.info("value from file: " + exchangeRateValue.getExchangeRate());
 
-            return BigDecimal.valueOf(exchangeRateValue.getExchangeRate());
+            return exchangeRateValue.getExchangeRate();
         } catch (IOException e) {
             log.error("Ошибка при чтении из файла: " + e.getMessage());
 
@@ -46,7 +45,6 @@ public class ExchangeRateProvider {
     private @Nullable BigDecimal getExchangeRateFromService() {
         final BigDecimal result = Optional.ofNullable(exchangeService.getExchangeRate())
                 .map(ExchangeRateValue::getExchangeRate)
-                .map(BigDecimal::valueOf)
                 .orElse(null);
         log.info("value from service: " + result);
 

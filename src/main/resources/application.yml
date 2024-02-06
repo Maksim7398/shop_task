@@ -35,6 +35,9 @@ app:
     path: src/main/resources/reports
   cache:
       expireAfterAccess: 60
+interaction:
+  rate:
+    stub: false
 
 service:
   path:

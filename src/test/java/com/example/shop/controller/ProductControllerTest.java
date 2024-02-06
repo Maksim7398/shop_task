@@ -2,7 +2,6 @@ package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.model.CreateProductRequestBuilder;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,7 @@ public class ProductControllerTest {
     private int port;
 
     @Test
-    public void create_whenRequestGet_thenOK() throws JsonProcessingException {
+    public void create_whenRequestGet_thenOK(){
         CreateProductRequest createProductRequest = CreateProductRequestBuilder.aCreateProductRequest().build();
         RestAssured.given()
                 .baseUri("http://localhost:" + port + "/my-app")
