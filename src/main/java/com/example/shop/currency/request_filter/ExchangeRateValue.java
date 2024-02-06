@@ -1,4 +1,4 @@
-package com.example.shop.service.product.request_filter;
+package com.example.shop.currency.request_filter;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;

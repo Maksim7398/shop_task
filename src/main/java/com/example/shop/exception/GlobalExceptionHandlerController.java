@@ -16,12 +16,12 @@ public class GlobalExceptionHandlerController {
     @ExceptionHandler
     public ResponseEntity<ErrorDetails> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
         ErrorDetails errorDetails = new ErrorDetails(
-                        exception.getClass().getSimpleName(),
-                        exception.getFieldErrors()
-                                .stream()
-                                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                                .collect(Collectors.joining("; ")),
-                        LocalDateTime.now()
+                exception.getClass().getSimpleName(),
+                exception.getFieldErrors()
+                        .stream()
+                        .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                        .collect(Collectors.joining("; ")),
+                LocalDateTime.now()
         );
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
     }
@@ -36,5 +36,11 @@ public class GlobalExceptionHandlerController {
     public ResponseEntity<ErrorDetails> handleArticleAlreadyExistsException(ArticleAlreadyExistsException exception) {
         ErrorDetails errorDetails = new ErrorDetails(exception.getClass().getSimpleName(), exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorDetails> handleStorageException(StorageException exception) {
+        ErrorDetails errorDetails = new ErrorDetails(exception.getClass().getSimpleName(), exception.getMessage(), LocalDateTime.now());
+        return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 }

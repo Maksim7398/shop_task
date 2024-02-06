@@ -28,8 +28,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.2.0</version>
-            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -60,11 +64,6 @@
             <version>1.18.30</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <version>3.1.6</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.2.2</version>
@@ -78,11 +77,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <version>3.3.0</version>
@@ -94,9 +88,8 @@
             <version>3.1.8</version>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
-            <version>6.1.2</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
     </dependencies>
 
@@ -124,28 +117,6 @@
                             <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <image>
-                        <builder>paketobuildpacks/builder-jammy-base:latest</builder>
-                    </image>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.10</version>
-                <configuration>
-                    <useFile>false</useFile>
                 </configuration>
             </plugin>
             <plugin>

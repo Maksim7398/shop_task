@@ -6,7 +6,7 @@ import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.model.ProductDto;
 import com.example.shop.persist.entity.ProductEntity;
-import com.example.shop.service.request.ImmutableUpdateProductRequest;
+import com.example.shop.service.product.request.ImmutableUpdateProductRequest;
 import org.mapstruct.Mapper;
 
 import java.util.List;

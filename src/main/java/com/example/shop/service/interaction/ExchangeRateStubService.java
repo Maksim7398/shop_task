@@ -1,6 +1,6 @@
 package com.example.shop.service.interaction;
 
-import com.example.shop.service.product.request_filter.ExchangeRateValue;
+import com.example.shop.currency.request_filter.ExchangeRateValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;

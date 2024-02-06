@@ -1,9 +1,9 @@
-package com.example.shop.service;
+package com.example.shop.service.product;
 
 import com.example.shop.controller.request.CreateProductRequest;
 import com.example.shop.controller.request.SearchFilter;
 import com.example.shop.model.ProductDto;
-import com.example.shop.service.request.ImmutableUpdateProductRequest;
+import com.example.shop.service.product.request.ImmutableUpdateProductRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
