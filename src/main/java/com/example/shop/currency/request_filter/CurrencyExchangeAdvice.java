@@ -2,6 +2,7 @@ package com.example.shop.currency.request_filter;
 
 import com.example.shop.controller.response.GetProductResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestControllerAdvice
 @RequiredArgsConstructor
+@Slf4j
 public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResponse> {
 
     private final ExchangeRateProvider exchangeRateProvider;
@@ -40,6 +42,7 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
         Optional.ofNullable(body)
                 .ifPresent(b -> b.setPrice(b.getPrice()
                 .divide(exchangeRateProvider.getExchangeValue(), RoundingMode.HALF_UP)));
+        log.info("value from advice " +  exchangeRateProvider.getExchangeValue().toString());
 
         return body;
     }
