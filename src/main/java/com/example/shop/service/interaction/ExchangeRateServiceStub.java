@@ -10,13 +10,13 @@ import org.springframework.stereotype.Service;
 @ConditionalOnProperty(value = "interaction.rate.stub")
 @Slf4j
 @Primary
-public class ExchangeRateStubService implements ExchangeServiceClient {
+public class ExchangeRateServiceStub implements ExchangeServiceClient {
 
     @Override
     public ExchangeRateValue getExchangeRate() {
-        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue();
-        exchangeRateValue.setExchangeRate(50.00);
+        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue(50.00);
         log.info("exchange rate value from service stub: " + exchangeRateValue.getExchangeRate().toString());
+
         return exchangeRateValue;
     }
 
