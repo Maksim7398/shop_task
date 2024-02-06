@@ -2,11 +2,11 @@ package com.example.shop.currency.request_filter;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class ExchangeRateValue {
-   private Double exchangeRate;
+   private BigDecimal exchangeRate;
 }
