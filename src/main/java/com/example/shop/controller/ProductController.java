@@ -7,7 +7,7 @@ import com.example.shop.controller.response.GetProductResponse;
 import com.example.shop.controller.response.UpdateProductResponse;
 import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.mapper.ProductMapper;
-import com.example.shop.service.ProductService;
+import com.example.shop.service.product.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

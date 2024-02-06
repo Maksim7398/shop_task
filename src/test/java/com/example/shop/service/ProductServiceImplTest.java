@@ -10,7 +10,7 @@ import com.example.shop.model.ProductEntityBuilder;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.service.product.ProductServiceImpl;
-import com.example.shop.service.request.ImmutableUpdateProductRequest;
+import com.example.shop.service.product.request.ImmutableUpdateProductRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

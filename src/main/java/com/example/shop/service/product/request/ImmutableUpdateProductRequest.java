@@ -1,4 +1,4 @@
-package com.example.shop.service.request;
+package com.example.shop.service.product.request;
 
 import com.example.shop.model.Category;
 import lombok.Builder;
