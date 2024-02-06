@@ -14,13 +14,15 @@ public class CreateProductRequestBuilder {
     public static final BigDecimal DEFAULT_PRICE = new BigDecimal(100);
     public static final Integer DEFAULT_QUANTITY = 5;
 
+    public static final Boolean IS_AVAILABLE = false;
+
     private String article = DEFAULT_ARTICLE;
     private String title = DEFAULT_TITLE;
     private String description = DEFAULT_DESCRIPTION;
     private Category category = DEFAULT_CATEGORY;
     private BigDecimal price = DEFAULT_PRICE;
     private Integer quantity = DEFAULT_QUANTITY;
-
+    private Boolean isAvailable = IS_AVAILABLE;
     private CreateProductRequestBuilder() {
     }
 
@@ -48,6 +50,10 @@ public class CreateProductRequestBuilder {
         this.category = category;
         return this;
     }
+    public CreateProductRequestBuilder withIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
+        return this;
+    }
 
     public CreateProductRequestBuilder withPrice(BigDecimal price) {
         this.price = price;
@@ -67,6 +73,7 @@ public class CreateProductRequestBuilder {
                 .category(category)
                 .price(price)
                 .quantity(quantity)
+                .isAvailable(isAvailable)
                 .build();
     }
 

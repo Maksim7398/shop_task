@@ -1,0 +1,34 @@
+package com.example.shop.service.interaction.config;
+
+import com.github.benmanes.caffeine.cache.Caffeine;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import java.util.concurrent.TimeUnit;
+
+
+@Configuration
+public class CacheConfig {
+
+    @Value("${app.cache.expireAfterAccess}")
+    private Integer timeCache;
+
+    @Bean
+    public CacheManager cacheManager() {
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("exchangeValue");
+        cacheManager.setCaffeine(builder());
+        return cacheManager;
+    }
+
+    Caffeine<Object, Object> builder() {
+        return Caffeine.newBuilder()
+                .initialCapacity(1)
+                .maximumSize(1)
+                .expireAfterAccess(timeCache, TimeUnit.SECONDS)
+                .recordStats();
+    }
+
+}
