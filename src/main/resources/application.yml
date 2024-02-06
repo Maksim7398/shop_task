@@ -3,6 +3,10 @@ server:
     context-path: /my-app
   port: 8085
 spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432}/${DATABASE_NAME:product-store}
     username: ${DATABASE_USERNAME:user}
@@ -29,9 +33,11 @@ app:
     percent: 0.1
   document:
     path: src/main/resources/reports
-interaction:
-  rate:
-    stub: false
+  interaction:
+    rate:
+      stub: false
+  cache:
+      expireAfterAccess: 60
 
 service:
   path:

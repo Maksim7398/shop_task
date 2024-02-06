@@ -1,10 +1,13 @@
 package com.example.shop.service.product.request_filter;
 
+import com.example.shop.currency.request_filter.ExchangeRateValue;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
+
+import java.math.BigDecimal;
 
 
 @Component
@@ -15,11 +18,12 @@ public class CurrencyValue {
 
     private Currency currency;
 
-    public @Nullable Double getRate(ExchangeRateValue exchangeRateValue) {
+    public @Nullable BigDecimal getRate(ExchangeRateValue exchangeRateValue) {
         if (exchangeRateValue == null) {
             return null;
         }
         log.info(currency.name());
+
         return switch (currency) {
             case EUR -> exchangeRateValue.getEUR();
             case RUB -> exchangeRateValue.getRUB();

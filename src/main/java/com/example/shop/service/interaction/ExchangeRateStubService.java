@@ -1,10 +1,12 @@
 package com.example.shop.service.interaction;
 
-import com.example.shop.service.product.request_filter.ExchangeRateValue;
+import com.example.shop.currency.request_filter.ExchangeRateValue;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @ConditionalOnProperty(value = "interaction.rate.stub")
@@ -14,9 +16,12 @@ public class ExchangeRateStubService implements ExchangeServiceClient {
 
     @Override
     public ExchangeRateValue getExchangeRate() {
-        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue();
-        exchangeRateValue.setExchangeRate(50.00);
-        log.info("exchange rate value from service stub: " + exchangeRateValue.getExchangeRate().toString());
+        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue(
+                new BigDecimal("1.00"),
+                new BigDecimal("50.00"),
+                new BigDecimal("100.00"));
+        log.info("exchange rate value from service stub: " + exchangeRateValue);
+
         return exchangeRateValue;
     }
 
