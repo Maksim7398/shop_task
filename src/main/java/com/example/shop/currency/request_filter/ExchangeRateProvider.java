@@ -24,10 +24,13 @@ public class ExchangeRateProvider {
     private final BigDecimal DEFAULT_EXCHANGE_RATE = new BigDecimal("1.0");
 
     public BigDecimal getExchangeValue(Currency currency) {
-        return Optional.ofNullable(getExchangeRateFromService(currency)).orElseGet(() -> getExchangeRateFromFile(currency));
+        return Optional.ofNullable(getRate(getExchangeRateFromService(),currency))
+                .orElseGet( () ->
+                Optional.ofNullable(getRate(getExchangeRateFromFile(),currency))
+                .orElse(DEFAULT_EXCHANGE_RATE));
     }
 
-    public BigDecimal getExchangeRateFromFile(Currency currency) {
+    public @Nullable ExchangeRateValue getExchangeRateFromFile() {
         try {
             final Resource resource = new ClassPathResource("exchangeRate.json");
             final ObjectMapper objectMapper = new ObjectMapper();
@@ -36,22 +39,22 @@ public class ExchangeRateProvider {
                             ExchangeRateValue.class);
             log.info("value from file: " + exchangeRateValue);
 
-            return getRate(exchangeRateValue,currency);
+            return exchangeRateValue;
         } catch (IOException e) {
             log.error("Ошибка при чтении из файла: " + e.getMessage());
 
-            return DEFAULT_EXCHANGE_RATE;
+            return null;
         }
     }
 
-    private @Nullable BigDecimal getExchangeRateFromService(Currency currency) {
+    private @Nullable ExchangeRateValue getExchangeRateFromService() {
         final ExchangeRateValue result = exchangeService.getExchangeRate();
         log.info("value from service: " + result);
 
-        return getRate(result,currency);
+        return result;
     }
 
-    private static BigDecimal getRate(ExchangeRateValue exchangeRateValue, Currency currency) {
+    private @Nullable static BigDecimal getRate(ExchangeRateValue exchangeRateValue, Currency currency) {
         if (exchangeRateValue == null) {
             return null;
         }
