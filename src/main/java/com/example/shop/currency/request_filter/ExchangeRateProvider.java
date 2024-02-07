@@ -1,7 +1,7 @@
 package com.example.shop.currency.request_filter;
 
 import com.example.shop.service.interaction.ExchangeServiceClientImpl;
-import com.example.shop.service.product.currency_filter.CurrencyValue;
+import com.example.shop.service.product.currency_filter.Currency;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +21,13 @@ public class ExchangeRateProvider {
 
     private final ExchangeServiceClientImpl exchangeService;
 
-    private final CurrencyValue currencyValue;
-
     private final BigDecimal DEFAULT_EXCHANGE_RATE = new BigDecimal("1.0");
 
-    public BigDecimal getExchangeValue() {
-        return Optional.ofNullable(getExchangeRateFromService()).orElseGet(this::getExchangeRateFromFile);
+    public BigDecimal getExchangeValue(Currency currency) {
+        return Optional.ofNullable(getExchangeRateFromService(currency)).orElseGet(() -> getExchangeRateFromFile(currency));
     }
 
-    public BigDecimal getExchangeRateFromFile() {
+    public BigDecimal getExchangeRateFromFile(Currency currency) {
         try {
             final Resource resource = new ClassPathResource("exchangeRate.json");
             final ObjectMapper objectMapper = new ObjectMapper();
@@ -38,7 +36,7 @@ public class ExchangeRateProvider {
                             ExchangeRateValue.class);
             log.info("value from file: " + exchangeRateValue);
 
-            return currencyValue.getRate(exchangeRateValue);
+            return getRate(exchangeRateValue,currency);
         } catch (IOException e) {
             log.error("Ошибка при чтении из файла: " + e.getMessage());
 
@@ -46,10 +44,24 @@ public class ExchangeRateProvider {
         }
     }
 
-    private @Nullable BigDecimal getExchangeRateFromService() {
+    private @Nullable BigDecimal getExchangeRateFromService(Currency currency) {
         final ExchangeRateValue result = exchangeService.getExchangeRate();
         log.info("value from service: " + result);
 
-        return currencyValue.getRate(result);
+        return getRate(result,currency);
     }
+
+    private static BigDecimal getRate(ExchangeRateValue exchangeRateValue, Currency currency) {
+        if (exchangeRateValue == null) {
+            return null;
+        }
+        log.info(currency.name());
+
+        return switch (currency) {
+            case EUR -> exchangeRateValue.getEUR();
+            case RUB -> exchangeRateValue.getRUB();
+            case USD -> exchangeRateValue.getUSD();
+        };
+    }
+
 }

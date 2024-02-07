@@ -16,15 +16,14 @@ import java.io.IOException;
 @Slf4j
 public class CurrencyFilter extends OncePerRequestFilter {
 
-    private final CurrencyValue currencyValue;
+    private final CurrencyProvider currencyProvider;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        final String currency = request.getHeader("currency");
-        if (currency != null && !currency.isEmpty()) {
-            currencyValue.setCurrency(Currency.valueOf(currency));
-        } else {
-            currencyValue.setCurrency(Currency.RUB);
+        final String headerCurrency = request.getHeader("currency");
+        final Currency currency = Currency.checkName(headerCurrency);
+        if (currency != null) {
+            currencyProvider.setCurrency(currency);
         }
         filterChain.doFilter(request, response);
     }

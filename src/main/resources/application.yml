@@ -38,10 +38,6 @@ app:
       stub: false
   cache:
       expireAfterAccess: 60
-interaction:
-  rate:
-    stub: false
-
 service:
   path:
     url: http://localhost:8080/my-app

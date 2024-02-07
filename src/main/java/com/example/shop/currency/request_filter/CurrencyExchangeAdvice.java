@@ -1,6 +1,7 @@
 package com.example.shop.currency.request_filter;
 
 import com.example.shop.controller.response.GetProductResponse;
+import com.example.shop.service.product.currency_filter.CurrencyProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.MethodParameter;
@@ -23,6 +24,8 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
 
     private final ExchangeRateProvider exchangeRateProvider;
 
+    private final CurrencyProvider currencyProvider;
+
     @Override
     public boolean supports(MethodParameter returnType,
                             @NonNull Class<? extends HttpMessageConverter<?>> converterType) {
@@ -41,8 +44,8 @@ public class CurrencyExchangeAdvice implements ResponseBodyAdvice<GetProductResp
 
         Optional.ofNullable(body)
                 .ifPresent(b -> b.setPrice(b.getPrice()
-                .divide(exchangeRateProvider.getExchangeValue(), RoundingMode.HALF_UP)));
-        log.info("value from advice " +  exchangeRateProvider.getExchangeValue().toString());
+                .divide(exchangeRateProvider.getExchangeValue(currencyProvider.getCurrency()), RoundingMode.HALF_UP)));
+        log.info("value from advice " +  exchangeRateProvider.getExchangeValue(currencyProvider.getCurrency()).toString());
 
         return body;
     }
