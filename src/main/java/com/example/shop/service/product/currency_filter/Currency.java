@@ -5,7 +5,7 @@ public enum Currency {
     USD,
     EUR;
 
-    public static Currency checkName(String name) {
+    public static Currency fromName(String name) {
         for (Currency currency : Currency.values()) {
             if (name != null) {
                 if (name.equals(currency.name())) {

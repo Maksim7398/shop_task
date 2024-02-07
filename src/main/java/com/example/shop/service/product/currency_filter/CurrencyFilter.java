@@ -21,13 +21,12 @@ public class CurrencyFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String headerCurrency = request.getHeader("currency");
-        final Currency currency = Currency.checkName(headerCurrency);
+        final Currency currency = Currency.fromName(headerCurrency);
         if (currency != null) {
             currencyProvider.setCurrency(currency);
         }
         filterChain.doFilter(request, response);
     }
-
 }
 
 
