@@ -8,5 +8,9 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 public class ExchangeRateValue {
-   private BigDecimal exchangeRate;
+
+    private BigDecimal RUB;
+    private BigDecimal USD;
+    private BigDecimal EUR;
+
 }
