@@ -1,4 +1,4 @@
-package com.example.shop.service.product.request_filter;
+package com.example.shop.service.product.currency_filter;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

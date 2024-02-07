@@ -12,13 +12,17 @@ import java.math.BigDecimal;
 @ConditionalOnProperty(value = "interaction.rate.stub")
 @Slf4j
 @Primary
-public class ExchangeRateServiceStub implements ExchangeServiceClient {
+public class ExchangeRateClientStub implements ExchangeServiceClient {
 
     @Override
     public ExchangeRateValue getExchangeRate() {
-        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue(new BigDecimal("50.0"));
-        log.info("exchange rate value from service stub: " + exchangeRateValue.getExchangeRate().toString());
+        final ExchangeRateValue exchangeRateValue = new ExchangeRateValue(
+                new BigDecimal("1.00"),
+                new BigDecimal("50.00"),
+                new BigDecimal("100.00"));
+        log.info("exchange rate value from service stub: " + exchangeRateValue);
 
         return exchangeRateValue;
     }
+
 }
