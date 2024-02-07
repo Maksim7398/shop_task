@@ -1,7 +1,6 @@
 package com.example.shop.currency.request_filter;
 
 import com.example.shop.service.interaction.ExchangeServiceClientImpl;
-import com.example.shop.service.product.request_filter.CurrencyValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
