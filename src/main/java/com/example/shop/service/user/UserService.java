@@ -1,9 +1,10 @@
 package com.example.shop.service.user;
 
 import com.example.shop.controller.request.CreateUserRequest;
-import com.example.shop.persist.entity.User;
+import com.example.shop.persist.entity.UserEntity;
 
 public interface UserService {
-    User save(CreateUserRequest user);
+
+    UserEntity createUser(CreateUserRequest user);
 
 }

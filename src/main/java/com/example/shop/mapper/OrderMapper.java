@@ -1,22 +1,20 @@
 package com.example.shop.mapper;
 
-import com.example.shop.controller.request.CreateOrder;
+import com.example.shop.controller.response.GetOrderProductResponse;
 import com.example.shop.controller.response.GetOrderResponse;
 import com.example.shop.model.OrderDto;
-import com.example.shop.model.ProductOrder;
-import com.example.shop.persist.entity.Order;
-import com.example.shop.persist.entity.ProductEntity;
+import com.example.shop.model.OrderProductDto;
+import com.example.shop.persist.entity.OrderEntity;
 import org.mapstruct.Mapper;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface OrderMapper {
-    Order createOrder(CreateOrder createOrder);
 
-    ProductOrder convertEntityToOrder(ProductEntity product);
+    List<GetOrderProductResponse> convertListProductsOrderDtoToResponse(List<OrderProductDto> orderProductDtoList);
 
-    List<OrderDto> convertEntityToDto(List<Order> productOrderList);
+    List<OrderDto> convertEntityToDto(List<OrderEntity> productOrderListEntity);
 
     List<GetOrderResponse> convertDtoToResponse(List<OrderDto> productDto);
 }

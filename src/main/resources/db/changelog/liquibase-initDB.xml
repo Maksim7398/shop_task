@@ -33,4 +33,45 @@
     <changeSet id="002-init-records" author="Maksim7398">
         <sqlFile path="db/changelog/data.sql"/>
     </changeSet>
+    <changeSet author="Maksim 7398" id="003-create-table-orders">
+        <createTable tableName="orders">
+            <column name="id" type="UUID" remarks="it`s order id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="orders_pkey"/>
+            </column>
+            <column name="order_price" type="numeric(38, 2)" remarks="total price of order"/>
+            <column name="status" type="VARCHAR(255)" remarks="status of order"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="create date of order"/>
+            <column name="user_id" type="UUID" remarks="user id when placed an order" />
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="004-user-seq">
+        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="user_seq" startValue="1"/>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="005-create-table-ordered-product">
+        <createTable tableName="ordered_product">
+            <column name="price" type="numeric(38, 2)" remarks="price of one product in order"/>
+            <column name="quantity" type="INTEGER" remarks="quantity of products in order"/>
+            <column name="order_id" type="UUID" remarks="order id when was create order">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ordered_product_pkey"/>
+            </column>
+            <column name="product_id" type="UUID" remarks="product id was in create order" >
+                <constraints nullable="false" primaryKey="true" primaryKeyName="ordered_product_pkey"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="006-create-table-users">
+        <createTable tableName="users">
+            <column name="id" type="UUID" remarks="user id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" remarks="user name"/>
+            <column name="email" type="VARCHAR(255)" remarks="user email"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="007-create-key-from-order-to-ordered_products">
+        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="ordered_product" constraintName="fk2nijit240cv1lx2ak4x5cakm8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="007-create-key-from-user-to-orders">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="fk32ql8ubntj5uh44ph9659tiih" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

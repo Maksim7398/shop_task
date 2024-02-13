@@ -11,8 +11,8 @@ import java.util.UUID;
 
 @Embeddable
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class CompositeKey implements Serializable{
 
     @Column(name = "order_id")
@@ -20,6 +20,4 @@ public class CompositeKey implements Serializable{
 
     @Column(name = "product_id")
     private UUID productId;
-
-
 }

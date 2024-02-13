@@ -1,29 +1,35 @@
 package com.example.shop.service.order;
 
-import com.example.shop.controller.request.CreateOrder;
 import com.example.shop.controller.request.CreateOrderRequest;
 
+import com.example.shop.controller.request.CreateOrderedProduct;
+import com.example.shop.exception.OrderNotFoundException;
+import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.OrderDto;
+import com.example.shop.model.OrderProductDto;
 import com.example.shop.model.Status;
 import com.example.shop.persist.entity.CompositeKey;
-import com.example.shop.persist.entity.Order;
-import com.example.shop.persist.entity.OrderToProduct;
+import com.example.shop.persist.entity.OrderEntity;
+import com.example.shop.persist.entity.OrderedProductEntity;
 import com.example.shop.persist.entity.ProductEntity;
+import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.OrderRepository;
 import com.example.shop.persist.repository.OrderToProductRepository;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.repository.UserRepository;
-import com.example.shop.service.product.ProductServiceImpl;
-import com.example.shop.service.product.request.ImmutableUpdateProductRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -37,68 +43,69 @@ public class OrderServiceImpl implements OrderService {
 
     private final OrderToProductRepository orderToProductRepository;
 
-    private final ProductServiceImpl productService;
-
     private final OrderMapper orderMapper;
 
     @Override
-    public UUID save(CreateOrderRequest request) {
-        final List<CreateOrder> createOrderList = request.getProduct();
-        final List<ProductEntity> productOrders = new ArrayList<>();
-        final OrderToProduct orderToProduct = new OrderToProduct();
-        final CompositeKey compositeKey = new CompositeKey();
-        final double[] totalPrice = new double[3];
+    @Transactional
+    public UUID save(final CreateOrderRequest request,final UUID user_id) {
+        final UserEntity user = userRepository
+                .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
-        for (CreateOrder createOrder : createOrderList) {
-            final ProductEntity product = productRepository.findById(createOrder.getId()).get();
-            productOrders.add(product);
-            productService.updateProduct(product.getId(), ImmutableUpdateProductRequest.builder()
-                    .price(product.getPrice())
-                    .article(product.getArticle())
-                    .title(product.getTitle())
-                    .description(product.getDescription())
-                    .isAvailable(product.getIsAvailable())
-                    .category(product.getCategory())
-                    .quantity((product.getQuantity() - createOrder.getQuantity()))
-                    .build());
+        final List<CreateOrderedProduct> createOrderedProductList = request.getProducts();
+        final List<ProductEntity> productEntities =
+                productRepository.findAllById(
+                        createOrderedProductList.stream()
+                                .map(CreateOrderedProduct::getId).toList()
+                        );
 
-            totalPrice[1] = product.getPrice().doubleValue() * createOrder.getQuantity().doubleValue();
-            totalPrice[0] += totalPrice[1];
-        }
+        final Map<UUID,ProductEntity> productIdToProductEntityMap = productEntities.stream()
+                .collect(Collectors.toMap(ProductEntity::getId,Function.identity()));
 
-
-        final Order order = Order.builder()
-                .user(userRepository.findById(request.getUser()).get())
-                .product(productOrders)
+        final OrderEntity order = OrderEntity.builder()
+                .user(user)
                 .createDate(LocalDateTime.now())
                 .status(Status.CREATED).build();
+        orderRepository.save(order);
 
-        order.setOrderPrice(BigDecimal.valueOf(totalPrice[0]));
-        final Order saveOrder = orderRepository.save(order);
-        final UUID id = saveOrder.getId();
-        createOrderList.forEach((o) -> {
-            compositeKey.setProductId(o.getId());
-            compositeKey.setOrderId(id);
-            orderToProduct.setQuantity(o.getQuantity());
-            orderToProduct.setOrderId(compositeKey);
-            orderToProductRepository.save(orderToProduct);
-        });
-        return id;
+        final List<OrderedProductEntity> orderedProductEntitiesList = createOrderedProductList.stream()
+                .map(createOrderedProduct -> {
+                            final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
+                            product.setQuantity(product.getQuantity() - createOrderedProduct.getQuantity());
+                            return OrderedProductEntity.builder()
+                                    .compositeKey(new CompositeKey(order.getId(),createOrderedProduct.getId()))
+                                    .quantity( createOrderedProduct.getQuantity())
+                                    .price(product.getPrice()).build();
+                }).toList();
+        order.setOrderedProducts(orderedProductEntitiesList);
+
+        final BigDecimal totalPrice = orderedProductEntitiesList
+                .stream().map(o -> o.getPrice().multiply(BigDecimal.valueOf(o.getQuantity()))).reduce(BigDecimal::add).get();
+        order.setOrderPrice(totalPrice);
+
+        productRepository.saveAll(productEntities);
+        orderToProductRepository.saveAll(orderedProductEntitiesList);
+
+        return order.getId();
     }
 
     @Override
-    public String updateStatus(UUID orderId, Status status) {
-        final Order order = orderRepository.findById(orderId).get();
+    public String updateStatus(final UUID orderId,final Status status) {
+        final OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("order with this ID not found"));
         if (status != null) {
-            order.setStatus(status);
-            orderRepository.save(order);
-            return "Статус заказа изменён на: " + order.getStatus();
+            orderEntity.setStatus(status);
+            orderRepository.save(orderEntity);
+            return "Статус заказа изменён на: " + orderEntity.getStatus();
         }
-        return "Статус заказа не изменён: " + order.getStatus();
+        return "Статус заказа не изменён: " + orderEntity.getStatus();
     }
 
     @Override
-    public List<OrderDto> getOrdersByUserId(UUID uuid) {
-        return (orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid)));
+    public List<OrderDto> getOrdersByUserId(final UUID uuid) {
+        return orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid));
+    }
+
+    @Override
+    public List<OrderProductDto> getOrderProductByUserId(final UUID user_id, final UUID order_id){
+        return orderRepository.findProductsByOrderId(user_id,order_id);
     }
 }

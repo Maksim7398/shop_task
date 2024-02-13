@@ -3,25 +3,30 @@ package com.example.shop.persist.entity;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order_product")
-@Data
+@Table(name = "ordered_product")
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderToProduct {
+@Builder
+public class OrderedProductEntity {
 
     @EmbeddedId
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private CompositeKey orderId;
-
+    private CompositeKey compositeKey;
 
     @Column(name = "quantity")
     private Integer quantity;
+
+    @Column(name = "price")
+    private BigDecimal price;
 }
