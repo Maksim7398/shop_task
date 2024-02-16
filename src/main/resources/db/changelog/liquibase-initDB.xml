@@ -1,5 +1,8 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="Maksim7398" id="001-create-table-product">
         <createTable tableName="product">
             <column name="id" remarks="its unique id" type="UUID">
@@ -12,15 +15,16 @@
                 <constraints nullable="false"/>
             </column>
             <column name="article" type="VARCHAR(255)" remarks="article of products">
-                <constraints  unique="true" nullable="false"/>
+                <constraints unique="true" nullable="false"/>
             </column>
             <column name="quantity" type="INTEGER" remarks="count of products">
                 <constraints nullable="false"/>
             </column>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="time of burn products">
-            <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
-            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE" remarks="date change when product quantity changes">
+            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE"
+                    remarks="date change when product quantity changes">
                 <constraints nullable="false"/>
             </column>
             <column name="category" type="VARCHAR(255)" remarks="types of products"/>
@@ -32,5 +36,46 @@
     </changeSet>
     <changeSet id="002-init-records" author="Maksim7398">
         <sqlFile path="db/changelog/data.sql"/>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="003-create-table-users">
+        <createTable tableName="users">
+            <column name="id" type="UUID" remarks="user id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR(255)" remarks="user name"/>
+            <column name="email" type="VARCHAR(255)" remarks="user email"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="004-create-table-news">
+        <createTable tableName="news">
+            <column name="id" type="UUID" remarks="it`s news id">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="news_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(255)" remarks="title for news"/>
+            <column name="description" type="VARCHAR(1000)" remarks="description or news"/>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="create date of order"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="005-create-table users_watch_news">
+        <createTable tableName="users_watch_news">
+            <column name="user_entity_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="watch_news_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="006-create-foreignKey-for-news">
+        <addForeignKeyConstraint baseColumnNames="watch_news_id" baseTableName="users_watch_news"
+                                 constraintName="fk48eiatw9pm2l396235ecs0wu9" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="news" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="007-create-foreignKey-for-users">
+        <addForeignKeyConstraint baseColumnNames="user_entity_id" baseTableName="users_watch_news"
+                                 constraintName="fko5yfqd4cyygae73wgm48269po" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
 </databaseChangeLog>
