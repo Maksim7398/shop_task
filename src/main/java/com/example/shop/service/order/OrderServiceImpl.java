@@ -8,6 +8,7 @@ import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.OrderDto;
 import com.example.shop.model.OrderProductDto;
+import com.example.shop.model.OrdersInfo;
 import com.example.shop.model.Status;
 import com.example.shop.persist.entity.CompositeKey;
 import com.example.shop.persist.entity.OrderEntity;
@@ -18,12 +19,16 @@ import com.example.shop.persist.repository.OrderRepository;
 import com.example.shop.persist.repository.OrderToProductRepository;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.repository.UserRepository;
+import com.example.shop.service.interaction.ExchangeServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
@@ -44,6 +49,8 @@ public class OrderServiceImpl implements OrderService {
     private final OrderToProductRepository orderToProductRepository;
 
     private final OrderMapper orderMapper;
+
+    private final ExchangeServiceClient exchangeServiceClient;
 
     @Override
     @Transactional
@@ -107,5 +114,24 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderProductDto> getOrderProductByUserId(final UUID user_id, final UUID order_id){
         return orderRepository.findProductsByOrderId(user_id,order_id);
+    }
+
+    @Override
+    public Map<UUID, List<OrdersInfo>> orderInfoByProduct(final UUID product_id) {
+        final List<UUID> orderIdByProductId = orderToProductRepository.findOrderIdByProductId(product_id);
+        final List<OrderEntity> orderByProductId = orderRepository.findAllById(orderIdByProductId);
+        final List<OrdersInfo> ordersInfoList = new ArrayList<>();
+        orderByProductId.forEach(o -> {
+            ordersInfoList.add(new OrdersInfo(o.getId(),
+                    o.getStatus(),
+                    o.getOrderPrice(),
+                    o.getCreateDate(),
+                    o.getUser().getName(),
+                    Arrays.toString(exchangeServiceClient.getAllInnByEmail(List.of(o.getUser().getEmail())).toArray()))
+            );
+        });
+        final Map<UUID, List<OrdersInfo>> map = new HashMap<>();
+        map.put(product_id, ordersInfoList);
+        return map;
     }
 }

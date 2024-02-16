@@ -5,6 +5,7 @@ import com.example.shop.controller.request.CreateOrderRequest;
 import com.example.shop.controller.response.GetOrderProductResponse;
 import com.example.shop.controller.response.GetOrderResponse;
 import com.example.shop.mapper.OrderMapper;
+import com.example.shop.model.OrdersInfo;
 import com.example.shop.model.Status;
 import com.example.shop.service.order.OrderService;
 import jakarta.validation.Valid;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -47,4 +49,10 @@ public class OrderController {
     public List<GetOrderProductResponse> getOrdersProductByUserId(@PathVariable UUID user_id,@PathVariable UUID order_id){
         return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductByUserId(user_id,order_id));
     }
+
+    @GetMapping("/order/product/{product_id}")
+    public Map<UUID,List<OrdersInfo>> mapOrderToProduct(@PathVariable UUID product_id){
+      return service.orderInfoByProduct(product_id);
+    }
+
 }
