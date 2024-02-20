@@ -1,6 +1,11 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="Maksim7398" id="001-create-table-product">
+        <preConditions>
+            <not>
+                <tableExists tableName="product"/>
+            </not>
+        </preConditions>
         <createTable tableName="product">
             <column name="id" remarks="its unique id" type="UUID">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="product_pkey"/>
@@ -34,6 +39,11 @@
         <sqlFile path="db/changelog/data.sql"/>
     </changeSet>
     <changeSet author="Maksim 7398" id="003-create-table-orders">
+        <preConditions>
+            <not>
+                <tableExists tableName="orders"/>
+            </not>
+        </preConditions>
         <createTable tableName="orders">
             <column name="id" type="UUID" remarks="it`s order id">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="orders_pkey"/>
@@ -48,6 +58,11 @@
         <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="user_seq" startValue="1"/>
     </changeSet>
     <changeSet author="Maksim 7398" id="005-create-table-ordered-product">
+        <preConditions>
+            <not>
+                <tableExists tableName="ordered_product"/>
+            </not>
+        </preConditions>
         <createTable tableName="ordered_product">
             <column name="price" type="numeric(38, 2)" remarks="price of one product in order"/>
             <column name="quantity" type="INTEGER" remarks="quantity of products in order"/>
@@ -60,6 +75,11 @@
         </createTable>
     </changeSet>
     <changeSet author="Maksim 7398" id="006-create-table-users">
+        <preConditions>
+            <not>
+                <tableExists tableName="users"/>
+            </not>
+        </preConditions>
         <createTable tableName="users">
             <column name="id" type="UUID" remarks="user id">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
