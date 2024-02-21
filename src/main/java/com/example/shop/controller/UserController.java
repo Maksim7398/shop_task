@@ -1,7 +1,7 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateUserRequest;
-import com.example.shop.controller.response.GetOrderProductResponse;
+import com.example.shop.controller.response.GetOrderResponse;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.service.order.OrderService;
 import com.example.shop.service.user.UserService;
@@ -44,14 +44,13 @@ public class UserController {
     }
 
     /**
-     * Этот метод используется для получения всех продуктов которые есть в заказе у пользователя
+     * Этот метод получает заказы по id пользователя
      *
-     * @param userId  - id пользователя по которому будут полученны продукты
-     * @param orderId - id заказа в котором созедржать продукты
-     * @return возращает продукты которые есть в заказе у пользователя
+     * @param userId - id пользователя по которому нужно получить заказы
+     * @return все заказы которые есть у пользователя
      */
-    @GetMapping("/{userId}/{orderId}")
-    public List<GetOrderProductResponse> getOrdersProductByUserId(@PathVariable UUID userId, @PathVariable UUID orderId) {
-        return orderMapper.convertListProductsOrderDtoToResponse(orderService.getOrderProductByUserId(userId, orderId));
+    @GetMapping("/{userId}")
+    public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId) {
+        return orderMapper.convertDtoToResponse(orderService.getOrdersByUserId(userId));
     }
 }

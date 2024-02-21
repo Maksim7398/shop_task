@@ -1,8 +1,7 @@
 package com.example.shop.controller;
 
-
 import com.example.shop.controller.request.CreateOrderRequest;
-import com.example.shop.controller.response.GetOrderResponse;
+import com.example.shop.controller.response.GetOrderProductResponse;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.Status;
 import com.example.shop.service.order.OrderService;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -58,14 +58,14 @@ public class OrderController {
     }
 
     /**
-     * Этот метод получает заказы по id пользователя
+     * Этот метод используется для получения всех продуктов которые есть в заказе у пользователя
      *
-     * @param userId - id пользователя по которому нужно получить заказы
-     * @return все заказы которые есть у пользователя
+     * @param userId  - id пользователя по которому будут полученны продукты
+     * @param orderId - id заказа в котором созедржать продукты
+     * @return возращает продукты которые есть в заказе у пользователя
      */
-    @GetMapping("/{userId}")
-    public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId) {
-        return orderMapper.convertDtoToResponse(service.getOrdersByUserId(userId));
+    @GetMapping("/{orderId}")
+    public List<GetOrderProductResponse> getOrdersProducts(@RequestParam("userId") UUID userId, @PathVariable UUID orderId) {
+        return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductByUserId(userId, orderId));
     }
-
 }
