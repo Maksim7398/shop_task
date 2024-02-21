@@ -1,7 +1,9 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
     <changeSet author="Maksim7398" id="001-create-table-product">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="product"/>
             </not>
@@ -17,15 +19,16 @@
                 <constraints nullable="false"/>
             </column>
             <column name="article" type="VARCHAR(255)" remarks="article of products">
-                <constraints  unique="true" nullable="false"/>
+                <constraints unique="true" nullable="false"/>
             </column>
             <column name="quantity" type="INTEGER" remarks="count of products">
                 <constraints nullable="false"/>
             </column>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="time of burn products">
-            <constraints nullable="false"/>
+                <constraints nullable="false"/>
             </column>
-            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE" remarks="date change when product quantity changes">
+            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE"
+                    remarks="date change when product quantity changes">
                 <constraints nullable="false"/>
             </column>
             <column name="category" type="VARCHAR(255)" remarks="types of products"/>
@@ -39,7 +42,7 @@
         <sqlFile path="db/changelog/data.sql"/>
     </changeSet>
     <changeSet author="Maksim 7398" id="003-create-table-orders">
-        <preConditions>
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="orders"/>
             </not>
@@ -51,14 +54,11 @@
             <column name="order_price" type="numeric(38, 2)" remarks="total price of order"/>
             <column name="status" type="VARCHAR(255)" remarks="status of order"/>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="create date of order"/>
-            <column name="user_id" type="UUID" remarks="user id when placed an order" />
+            <column name="user_id" type="UUID" remarks="user id when placed an order"/>
         </createTable>
     </changeSet>
-    <changeSet author="Maksim 7398" id="004-user-seq">
-        <createSequence cacheSize="1" cycle="false" dataType="bigint" incrementBy="50" maxValue="9223372036854775807" minValue="1" sequenceName="user_seq" startValue="1"/>
-    </changeSet>
-    <changeSet author="Maksim 7398" id="005-create-table-ordered-product">
-        <preConditions>
+    <changeSet author="Maksim 7398" id="004-create-table-ordered-product">
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="ordered_product"/>
             </not>
@@ -69,13 +69,21 @@
             <column name="order_id" type="UUID" remarks="order id when was create order">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="ordered_product_pkey"/>
             </column>
-            <column name="product_id" type="UUID" remarks="product id was in create order" >
+            <column name="product_id" type="UUID" remarks="product id was in create order">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="ordered_product_pkey"/>
             </column>
         </createTable>
+        <addForeignKeyConstraint baseColumnNames="order_id"
+                                 baseTableName="ordered_product"
+                                 constraintName="fk2nijit240cv1lx2ak4x5cakm8"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders"
+                                 validate="true"/>
     </changeSet>
-    <changeSet author="Maksim 7398" id="006-create-table-users">
-        <preConditions>
+    <changeSet author="Maksim 7398" id="005-create-table-users">
+        <preConditions onFail="MARK_RAN">
             <not>
                 <tableExists tableName="users"/>
             </not>
@@ -87,11 +95,15 @@
             <column name="name" type="VARCHAR(255)" remarks="user name"/>
             <column name="email" type="VARCHAR(255)" remarks="user email"/>
         </createTable>
-    </changeSet>
-    <changeSet author="Maksim 7398" id="007-create-key-from-order-to-ordered_products">
-        <addForeignKeyConstraint baseColumnNames="order_id" baseTableName="ordered_product" constraintName="fk2nijit240cv1lx2ak4x5cakm8" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders" validate="true"/>
-    </changeSet>
-    <changeSet author="Maksim 7398" id="007-create-key-from-user-to-orders">
-        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="orders" constraintName="fk32ql8ubntj5uh44ph9659tiih" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="orders"
+                                 constraintName="fk32ql8ubntj5uh44ph9659tiih"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"
+                                 validate="true"/>
     </changeSet>
 </databaseChangeLog>
