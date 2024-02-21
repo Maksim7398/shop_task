@@ -65,7 +65,7 @@ public class OrderController {
      * @return возращает продукты которые есть в заказе у пользователя
      */
     @GetMapping("/{orderId}")
-    public List<GetOrderProductResponse> getOrdersProducts(@RequestParam("userId") UUID userId, @PathVariable UUID orderId) {
-        return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductByUserId(userId, orderId));
+    public List<GetOrderProductResponse> getOrderProductsById(@RequestParam("userId") UUID userId, @PathVariable UUID orderId) {
+        return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductsByUserIdAndOrderId(userId, orderId));
     }
 }

@@ -4,6 +4,7 @@ import com.example.shop.controller.request.CreateOrderRequest;
 
 import com.example.shop.controller.request.CreateOrderedProduct;
 import com.example.shop.exception.OrderNotFoundException;
+import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.OrderDto;
@@ -27,6 +28,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -47,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID save(final CreateOrderRequest request,final UUID user_id) {
+    public UUID save(final CreateOrderRequest request, final UUID user_id) {
         final UserEntity user = userRepository
                 .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
@@ -56,10 +58,14 @@ public class OrderServiceImpl implements OrderService {
                 productRepository.findAllById(
                         createOrderedProductList.stream()
                                 .map(CreateOrderedProduct::getId).toList()
-                        );
+                );
 
-        final Map<UUID,ProductEntity> productIdToProductEntityMap = productEntities.stream()
-                .collect(Collectors.toMap(ProductEntity::getId,Function.identity()));
+        if (productEntities.isEmpty()){
+            throw new ProductNotFoundException("Таких продуктов нет на складе");
+        }
+
+        final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
+                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
         final OrderEntity order = OrderEntity.builder()
                 .user(user)
@@ -67,14 +73,18 @@ public class OrderServiceImpl implements OrderService {
                 .status(Status.CREATED).build();
         orderRepository.save(order);
 
+
         final List<OrderedProductEntity> orderedProductEntitiesList = createOrderedProductList.stream()
                 .map(createOrderedProduct -> {
-                            final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
-                            product.setQuantity(product.getQuantity() - createOrderedProduct.getQuantity());
-                            return OrderedProductEntity.builder()
-                                    .compositeKey(new CompositeKey(order.getId(),createOrderedProduct.getId()))
-                                    .quantity( createOrderedProduct.getQuantity())
-                                    .price(product.getPrice()).build();
+                    final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
+                    product.setQuantity(
+                            Optional.of(product.getQuantity() - createOrderedProduct.getQuantity())
+                                    .filter(p -> !(product.getQuantity() <= createOrderedProduct.getQuantity())).orElseThrow(() ->
+                                    new ProductNotFoundException("в таком количестве, нет продуктов на складе")));
+                    return OrderedProductEntity.builder()
+                            .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
+                            .quantity(createOrderedProduct.getQuantity())
+                            .price(product.getPrice()).build();
                 }).toList();
         order.setOrderedProducts(orderedProductEntitiesList);
 
@@ -89,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String updateStatus(final UUID orderId,final Status status) {
+    public String updateStatus(final UUID orderId, final Status status) {
         final OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("order with this ID not found"));
         if (status != null) {
             orderEntity.setStatus(status);
@@ -101,11 +111,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public List<OrderDto> getOrdersByUserId(final UUID uuid) {
-        return orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid));
+        return orderMapper.convertEntityToDto(orderRepository.findOrdersByUserId(uuid));
     }
 
     @Override
-    public List<OrderProductDto> getOrderProductByUserId(final UUID user_id, final UUID order_id){
-        return orderRepository.findProductsByOrderId(user_id,order_id);
+    public List<OrderProductDto> getOrderProductsByUserIdAndOrderId(final UUID userId, final UUID orderId) {
+        return orderRepository.findProductsByOrderId(userId, orderId);
     }
 }

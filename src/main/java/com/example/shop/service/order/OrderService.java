@@ -16,5 +16,5 @@ public interface OrderService {
 
     List<OrderDto>  getOrdersByUserId(UUID uuid);
 
-    List<OrderProductDto> getOrderProductByUserId(UUID user_id, UUID order_id);
+    List<OrderProductDto> getOrderProductsByUserIdAndOrderId(UUID userId, UUID orderId);
 }
