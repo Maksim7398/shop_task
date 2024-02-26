@@ -33,10 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
-import java.util.List;
-
-import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -59,9 +55,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID save(final CreateOrderRequest request, final UUID user_id) {
+    public UUID save(final CreateOrderRequest request, final UUID userId) {
         final UserEntity user = userRepository
-                .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
+                .findById(userId).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
         final List<CreateOrderedProduct> createOrderedProductList = request.getProducts();
         final List<ProductEntity> productEntities =
@@ -69,10 +65,6 @@ public class OrderServiceImpl implements OrderService {
                         createOrderedProductList.stream()
                                 .map(CreateOrderedProduct::getId).toList()
                         );
-
-        final Map<UUID,ProductEntity> productIdToProductEntityMap = productEntities.stream()
-                .collect(Collectors.toMap(ProductEntity::getId,Function.identity()));
-                );
 
         if (productEntities.isEmpty()){
             throw new ProductNotFoundException("Таких продуктов нет на складе");
@@ -120,8 +112,13 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getOrdersByUserId(final UUID uuid) {
-        return orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid));
+    public List<OrderDto> getOrdersByUserId(final UUID userId) {
+        return orderMapper.convertEntityToDto(orderRepository.findOrdersByUserId(userId));
+    }
+
+    @Override
+    public List<OrderProductDto> getOrderProductsByUserIdAndOrderId(final UUID userId, final UUID orderId) {
+        return orderRepository.findProductsByOrderId(userId, orderId);
     }
 
     @Override

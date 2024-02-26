@@ -2,6 +2,7 @@ package com.example.shop.service.user;
 
 import com.example.shop.controller.request.CreateUserRequest;
 import com.example.shop.mapper.UserMapper;
+import com.example.shop.model.UserDto;
 import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
