@@ -81,7 +81,7 @@ public class OrderController {
      */
     @GetMapping("/orders_info")
     public Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts(){
-        return service.orderInfoByProduct();
+        return service.findOrdersInfoByProducts();
     }
 
     /**
