@@ -15,15 +15,19 @@ import java.util.UUID;
 
 public interface OrderService {
 
-    UUID save(CreateOrderRequest request, UUID user_id);
+    UUID save(CreateOrderRequest request,UUID userId);
+
     String updateStatus(UUID orderId, Status status);
-    List<OrderDto> getOrdersByUserId(UUID uuid);
+
+    List<OrderDto>  getOrdersByUserId(UUID userId);
 
     List<OrderProductDto> getOrderProductsByUserIdAndOrderId(UUID userId, UUID orderId);
 
     BigDecimal calculateTotalPrice(List<OrderedProductEntity> entities);
+
     void createOrderedProduct(List<ProductEntity> productEntities,
                               OrderEntity order,
                               List<CreateOrderedProduct> createOrderedProductList);
+
     void addProductInOrderExists(UUID orderID, CreateOrderRequest createOrderRequest);
 }

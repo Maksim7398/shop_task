@@ -72,6 +72,7 @@ public class OrderServiceImpl implements OrderService {
 
         orderRepository.save(order);
         createOrderedProduct(productEntities, order, createOrderedProductList);
+
         return order.getId();
     }
 
