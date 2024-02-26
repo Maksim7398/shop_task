@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
     private final NewsRepository newsRepository;
 
     @Override
-    public UserEntity createUser(final CreateUserRequest createUserRequest) {
+    public UserDto createUser(final CreateUserRequest createUserRequest) {
         final UserEntity userEntity = mapper.save(createUserRequest);
 
         return repository.save(userEntity);
@@ -51,5 +51,12 @@ public class UserServiceImpl implements UserService {
                 new UserNotFoundException("user with this id not found"));
         userEntity.getWatchNews().remove(newsEntity);
         repository.save(userEntity);
+    }
+
+    @Override
+    public UserDto createUser(CreateUserRequest createUserRequest) {
+        final UserEntity userEntity = mapper.save(createUserRequest);
+
+        return mapper.convertEntityToDto(repository.save(userEntity));
     }
 }

@@ -45,13 +45,13 @@ public class GlobalExceptionHandlerController {
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDetails> handleUserNotFoundExceptionException(UserNotFoundException exception) {
+    public ResponseEntity<ErrorDetails> handleUserNotFoundException(UserNotFoundException exception) {
         ErrorDetails errorDetails = new ErrorDetails(exception.getClass().getSimpleName(), exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorDetails> handleNewsNotFoundException(NewsNotFoundException exception) {
+    public ResponseEntity<ErrorDetails> handleOrderNotFoundException(OrderNotFoundException exception) {
         ErrorDetails errorDetails = new ErrorDetails(exception.getClass().getSimpleName(), exception.getMessage(), LocalDateTime.now());
         return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
     }
