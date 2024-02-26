@@ -3,7 +3,6 @@ package com.example.shop.controller;
 import com.example.shop.controller.request.CreateUserRequest;
 import com.example.shop.controller.response.GetOrderResponse;
 import com.example.shop.mapper.OrderMapper;
-import com.example.shop.service.interaction.ExchangeServiceClient;
 import com.example.shop.service.order.OrderService;
 import com.example.shop.service.user.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +32,6 @@ public class UserController {
 
     private final OrderService orderService;
 
-    private final ExchangeServiceClient exchangeServiceClient;
-
     /**
      * Этот метод используется для создания пользователя
      *
@@ -55,10 +52,5 @@ public class UserController {
     @GetMapping("/{userId}")
     public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId) {
         return orderMapper.convertDtoToResponse(orderService.getOrdersByUserId(userId));
-    }
-
-    @PostMapping("/user/inn_by_email")
-    private List getInnByEmail(@RequestBody List<String> email){
-        return exchangeServiceClient.getAllInnByEmail(email);
     }
 }

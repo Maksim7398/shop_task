@@ -17,7 +17,7 @@ import com.example.shop.persist.entity.OrderedProductEntity;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.OrderRepository;
-import com.example.shop.persist.repository.OrderToProductRepository;
+import com.example.shop.persist.repository.OrderedProductEntityRepository;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.repository.UserRepository;
 import com.example.shop.service.interaction.ExchangeServiceClient;
@@ -27,16 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import java.util.Map;
-import java.util.List;
-
-import java.util.Map;
-import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,7 +48,7 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductRepository productRepository;
 
-    private final OrderToProductRepository orderToProductRepository;
+    private final OrderedProductEntityRepository orderedProductEntityRepository;
 
     private final OrderMapper orderMapper;
 
@@ -59,22 +56,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID save(final CreateOrderRequest request, final UUID user_id) {
+    public UUID save(final CreateOrderRequest request, final UUID userId) {
         final UserEntity user = userRepository
-                .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
+                .findById(userId).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
         final List<CreateOrderedProduct> createOrderedProductList = request.getProducts();
         final List<ProductEntity> productEntities =
                 productRepository.findAllById(
                         createOrderedProductList.stream()
                                 .map(CreateOrderedProduct::getId).toList()
-                        );
-
-        final Map<UUID,ProductEntity> productIdToProductEntityMap = productEntities.stream()
-                .collect(Collectors.toMap(ProductEntity::getId,Function.identity()));
                 );
 
-        if (productEntities.isEmpty()){
+        if (productEntities.isEmpty()) {
             throw new ProductNotFoundException("Таких продуктов нет на складе");
         }
 
@@ -89,12 +82,12 @@ public class OrderServiceImpl implements OrderService {
 
         final List<OrderedProductEntity> orderedProductEntitiesList = createOrderedProductList.stream()
                 .map(createOrderedProduct -> {
-                            final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
-                            product.setQuantity(product.getQuantity() - createOrderedProduct.getQuantity());
-                            return OrderedProductEntity.builder()
-                                    .compositeKey(new CompositeKey(order.getId(),createOrderedProduct.getId()))
-                                    .quantity( createOrderedProduct.getQuantity())
-                                    .price(product.getPrice()).build();
+                    final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
+                    product.setQuantity(product.getQuantity() - createOrderedProduct.getQuantity());
+                    return OrderedProductEntity.builder()
+                            .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
+                            .quantity(createOrderedProduct.getQuantity())
+                            .price(product.getPrice()).build();
                 }).toList();
         order.setOrderedProducts(orderedProductEntitiesList);
 
@@ -103,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderPrice(totalPrice);
 
         productRepository.saveAll(productEntities);
-        orderToProductRepository.saveAll(orderedProductEntitiesList);
+        orderedProductEntityRepository.saveAll(orderedProductEntitiesList);
 
         return order.getId();
     }
@@ -120,26 +113,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getOrdersByUserId(final UUID uuid) {
-        return orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid));
+    public List<OrderDto> getOrdersByUserId(final UUID userId) {
+        return orderMapper.convertEntityToDto(orderRepository.findOrdersByUserId(userId));
     }
 
     @Override
-    public Map<UUID, List<OrdersInfo>> orderInfoByProduct(final UUID product_id) {
-        final List<UUID> orderIdByProductId = orderToProductRepository.findOrderIdByProductId(product_id);
-        final List<OrderEntity> orderByProductId = orderRepository.findAllById(orderIdByProductId);
-        final List<OrdersInfo> ordersInfoList = new ArrayList<>();
-        orderByProductId.forEach(o -> {
-            ordersInfoList.add(new OrdersInfo(o.getId(),
-                    o.getStatus(),
-                    o.getOrderPrice(),
-                    o.getCreateDate(),
-                    o.getUser().getName(),
-                    Arrays.toString(exchangeServiceClient.getAllInnByEmail(List.of(o.getUser().getEmail())).toArray()))
-            );
+    public List<OrderProductDto> getOrderProductsByUserIdAndOrderId(final UUID userId, final UUID orderId) {
+        return orderRepository.findProductsByOrderId(userId, orderId);
+    }
+
+    @Override
+    @Transactional
+    public Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts() {
+        final Set<OrderedProductEntity> orderedProductEntities = new HashSet<>(orderedProductEntityRepository.findAll());
+        final Map<UUID, Set<OrdersInfo>> map = new HashMap<>();
+
+        orderedProductEntities.forEach(p -> {
+            final Set<OrdersInfo> ordersInfoList = new HashSet<>();
+            final List<OrderEntity> orderEntities = orderRepository.orderEntityListByProductId(p.getCompositeKey().getProductId());
+            orderEntities.forEach(o -> {
+                ordersInfoList.add(new OrdersInfo(
+                        o.getId(),
+                        o.getStatus(),
+                        o.getOrderPrice(),
+                        o.getCreateDate(),
+                        o.getUser().getName(),
+                        Arrays.toString(exchangeServiceClient.getAllInnByEmail(List.of(o.getUser().getEmail())).toArray()))
+                );
+            });
+            map.put(p.getCompositeKey().getProductId(), ordersInfoList);
         });
-        final Map<UUID, List<OrdersInfo>> map = new HashMap<>();
-        map.put(product_id, ordersInfoList);
+
         return map;
     }
+
+
 }

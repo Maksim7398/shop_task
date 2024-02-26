@@ -8,7 +8,7 @@ import com.example.shop.persist.entity.OrderEntity;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.OrderRepository;
-import com.example.shop.persist.repository.OrderToProductRepository;
+import com.example.shop.persist.repository.OrderedProductEntityRepository;
 import com.example.shop.service.interaction.ExchangeServiceClient;
 import com.example.shop.service.order.OrderServiceImpl;
 import org.junit.jupiter.api.Test;
@@ -19,6 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,7 +33,7 @@ public class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepositoryMock;
     @Mock
-    private OrderToProductRepository orderToProductRepository;
+    private OrderedProductEntityRepository orderedProductEntityRepository;
     @Mock
     private ExchangeServiceClient exchangeServiceClient;
     @InjectMocks
@@ -47,10 +48,9 @@ public class OrderServiceImplTest {
         final List<String> innList = List.of("123456");
 
         when(orderRepositoryMock.findAllById(anyIterable())).thenReturn(List.of(orderEntity));
-        when(orderToProductRepository.findOrderIdByProductId(productEntity.getId())).thenReturn(List.of(UUID.randomUUID()));
         when(exchangeServiceClient.getAllInnByEmail(anyList())).thenReturn(innList);
 
-        final Map<UUID, List<OrdersInfo>> ordersInfoMap = orderServiceMock.orderInfoByProduct(productEntity.getId());
+        final Map<UUID, Set<OrdersInfo>> ordersInfoMap = orderServiceMock.findOrdersInfoByProducts();
 
         verify(orderRepositoryMock).findAllById(anyIterable());
 

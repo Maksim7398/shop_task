@@ -9,6 +9,7 @@ import java.util.List;
 import com.example.shop.model.OrdersInfo;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public interface OrderService {
@@ -21,5 +22,5 @@ public interface OrderService {
 
     List<OrderProductDto> getOrderProductsByUserIdAndOrderId(UUID userId, UUID orderId);
 
-    Map<UUID,List<OrdersInfo>> orderInfoByProduct(UUID product_id);
+    Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts();
 }

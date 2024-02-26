@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -73,13 +74,24 @@ public class OrderController {
         return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductsByUserIdAndOrderId(userId, orderId));
     }
 
-    @GetMapping("/{product_id}")
-    public Map<UUID,List<OrdersInfo>> mapOrderToProduct(@PathVariable UUID product_id){
-        return service.orderInfoByProduct(product_id);
+    /**
+     * Этот метод используется для получения информации о заказах по заказанным продуктам
+     *
+     * @return возращает мапу с id продукта и информации о заказах в которых есть этот продукт
+     */
+    @GetMapping("/orders_info")
+    public Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts(){
+        return service.orderInfoByProduct();
     }
 
-    @GetMapping("/{id}")
-    public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID id){
-        return orderMapper.convertDtoToResponse(service.getOrdersByUserId(id));
+    /**
+     * Этот метод возращает все заказы которые есть у пользователя
+     *
+     * @param userId  - id пользователя по которому будут полученны заказы
+     * @return возращает заказы которые есть у пользователя
+     */
+    @GetMapping("/{userId}")
+    public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId){
+        return orderMapper.convertDtoToResponse(service.getOrdersByUserId(userId));
     }
 }
