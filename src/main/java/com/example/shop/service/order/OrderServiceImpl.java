@@ -4,6 +4,7 @@ import com.example.shop.controller.request.CreateOrderRequest;
 
 import com.example.shop.controller.request.CreateOrderedProduct;
 import com.example.shop.exception.OrderNotFoundException;
+import com.example.shop.exception.ProductNotFoundException;
 import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.OrderDto;
@@ -32,6 +33,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import java.util.Map;
+import java.util.List;
+
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public UUID save(final CreateOrderRequest request,final UUID user_id) {
+    public UUID save(final CreateOrderRequest request, final UUID user_id) {
         final UserEntity user = userRepository
                 .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
@@ -67,6 +72,14 @@ public class OrderServiceImpl implements OrderService {
 
         final Map<UUID,ProductEntity> productIdToProductEntityMap = productEntities.stream()
                 .collect(Collectors.toMap(ProductEntity::getId,Function.identity()));
+                );
+
+        if (productEntities.isEmpty()){
+            throw new ProductNotFoundException("Таких продуктов нет на складе");
+        }
+
+        final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
+                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
         final OrderEntity order = OrderEntity.builder()
                 .user(user)
@@ -96,7 +109,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String updateStatus(final UUID orderId,final Status status) {
+    public String updateStatus(final UUID orderId, final Status status) {
         final OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("order with this ID not found"));
         if (status != null) {
             orderEntity.setStatus(status);
@@ -109,11 +122,6 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDto> getOrdersByUserId(final UUID uuid) {
         return orderMapper.convertEntityToDto(orderRepository.findOrderByUserId(uuid));
-    }
-
-    @Override
-    public List<OrderProductDto> getOrderProductByUserId(final UUID user_id, final UUID order_id){
-        return orderRepository.findProductsByOrderId(user_id,order_id);
     }
 
     @Override

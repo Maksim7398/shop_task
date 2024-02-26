@@ -16,5 +16,4 @@ public interface OrderToProductRepository extends JpaRepository<OrderedProductEn
     @Query("select ope.compositeKey.orderId from OrderedProductEntity ope " +
             "where ope.compositeKey.productId = :productId")
     List<UUID> findOrderIdByProductId(@Param("productId") UUID productId);
-
 }
