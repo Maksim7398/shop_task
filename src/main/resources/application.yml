@@ -8,7 +8,7 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432}/${DATABASE_NAME:product-store}
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432}/${DATABASE_NAME:store}
     username: ${DATABASE_USERNAME:user}
     password: ${DATABASE_PASSWORD:user}
     driver-class-name: org.postgresql.Driver
