@@ -35,8 +35,8 @@ public class NewsServiceImpl implements NewsService {
     }
     @Transactional
     @Override
-    public List<NewsDto> getNewsForUser(final UUID user_id) {
-        final UserEntity userEntity = userRepository.findById(user_id).orElseThrow(() ->
+    public List<NewsDto> getUnwatchNewsForUser(final UUID userId) {
+        final UserEntity userEntity = userRepository.findById(userId).orElseThrow(() ->
                 new UserNotFoundException("user with this id not found"));
         final List<NewsEntity> allNews = newsRepository.findAll();
         allNews.removeAll(userEntity.getWatchNews());

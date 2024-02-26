@@ -8,8 +8,8 @@ public interface UserService {
 
     UserDto createUser(CreateUserRequest user);
 
-    void watchNews(UUID user_id, UUID news_id);
+    void watchNews(UUID userId, UUID newsId);
 
-    void unwatchNews(UUID user_id, UUID news_id);
+    void unwatchNews(UUID userId, UUID newsId);
 }
 

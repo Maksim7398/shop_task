@@ -9,5 +9,5 @@ public interface NewsService {
 
     UUID createNews(NewsDto newsDto);
 
-    List<NewsDto> getNewsForUser(UUID user_id);
+    List<NewsDto> getUnwatchNewsForUser(UUID userId);
 }

@@ -1,6 +1,9 @@
 package com.example.shop.controller;
 
 import com.example.shop.controller.request.CreateUserRequest;
+import com.example.shop.controller.response.GetOrderResponse;
+import com.example.shop.mapper.OrderMapper;
+import com.example.shop.service.order.OrderService;
 import com.example.shop.service.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -24,6 +28,10 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+
+    private final OrderMapper orderMapper;
+
+    private final OrderService orderService;
 
     /**
      * Этот метод используется для создания пользователя
@@ -47,15 +55,29 @@ public class UserController {
         return orderMapper.convertDtoToResponse(orderService.getOrdersByUserId(userId));
     }
 
-    @GetMapping("/{user_id}/{news_id}")
-    public String watchNews(@PathVariable UUID user_id, @PathVariable UUID news_id){
-        userService.watchNews(user_id,news_id);
-        return "Новость " + news_id + " просмотрена";
+    /**
+     * Этот метод просматривает новость у пользователя
+     *
+     * @param userId - id пользователя по которому будет просмотренна новость
+     * @param newsId - id новости которая будет просмотренна
+     * @return id новости которая просмотренна
+     */
+    @GetMapping("/{userId}/{newsId}")
+    public String watchNews(@PathVariable UUID userId, @PathVariable UUID newsId){
+        userService.watchNews(userId, newsId);
+        return "Новость " + newsId + " просмотрена";
     }
 
-    @DeleteMapping("/{user_id}/{news_id}")
-    public String unwatchNews(@PathVariable UUID user_id, @PathVariable UUID news_id){
-        userService.unwatchNews(user_id,news_id);
-        return "Новость " + news_id + " не просмотрена";
+    /**
+     * Этот метод отменяет просмотр новости у пользователя
+     *
+     * @param userId - id пользователя по которому будет отменёнён просмотр новости
+     * @param newsId - id новости котрая будет помеченной не просмотренной
+     * @return id новости у которой отменён просмотр
+     */
+    @DeleteMapping("/{userId}/{newsId}")
+    public String unwatchNews(@PathVariable UUID userId, @PathVariable UUID newsId){
+        userService.unwatchNews(userId, newsId);
+        return "Новость " + newsId + " не просмотрена";
     }
 }

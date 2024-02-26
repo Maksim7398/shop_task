@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
+@RequestMapping("/news")
 @RequiredArgsConstructor
 public class NewsController {
 
@@ -22,13 +24,13 @@ public class NewsController {
 
     private final NewsMapper newsMapper;
 
-    @PostMapping("/news")
+    @PostMapping
     public UUID createNews(@RequestBody CreateNewsRequest createNewsRequest) {
         return newsService.createNews(newsMapper.newsDto(createNewsRequest));
     }
 
-    @GetMapping("/news/{user_id}")
-    public List<GetNewsResponse> getNewsForUser(@PathVariable UUID user_id){
-       return newsMapper.convertListDtoToResponse(newsService.getNewsForUser(user_id));
+    @GetMapping("/{userId}")
+    public List<GetNewsResponse> getNewsForUser(@PathVariable UUID userId){
+       return newsMapper.convertListDtoToResponse(newsService.getUnwatchNewsForUser(userId));
     }
 }

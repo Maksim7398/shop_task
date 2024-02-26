@@ -93,7 +93,9 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)" remarks="user name"/>
-            <column name="email" type="VARCHAR(255)" remarks="user email"/>
+            <column name="email" type="VARCHAR(255)" remarks="user email">
+                <constraints unique="true" nullable="false"/>
+            </column>
         </createTable>
         <addForeignKeyConstraint baseColumnNames="user_id"
                                  baseTableName="orders"
@@ -105,12 +107,13 @@
                                  referencedColumnNames="id"
                                  referencedTableName="users"
                                  validate="true"/>
-        <addForeignKeyConstraint baseColumnNames="users_id" baseTableName="users_watch_news"
-                                 constraintName="fko5yfqd4cyygae73wgm48269po" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
     <changeSet author="Maksim 7398" id="006-create-table-news">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="news"/>
+            </not>
+        </preConditions>
         <createTable tableName="news">
             <column name="id" type="UUID" remarks="it`s news id">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="news_pkey"/>
@@ -119,12 +122,14 @@
             <column name="description" type="VARCHAR(1000)" remarks="description or news"/>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="create date of order"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="watch_news_id" baseTableName="users_watch_news"
-                                 constraintName="fk48eiatw9pm2l396235ecs0wu9" deferrable="false"
-                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
-                                 referencedColumnNames="id" referencedTableName="news" validate="true"/>
+
     </changeSet>
     <changeSet author="Maksim 7398" id="007-create-table users_watch_news">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="users_watch_news"/>
+            </not>
+        </preConditions>
         <createTable tableName="users_watch_news">
             <column name="user_entity_id" type="UUID">
                 <constraints nullable="false"/>
@@ -133,5 +138,17 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="008-foreignKey for news">
+        <addForeignKeyConstraint baseColumnNames="watch_news_id" baseTableName="users_watch_news"
+                                 constraintName="fk48eiatw9pm2l396235ecs0wu9" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="news" validate="true"/>
+    </changeSet>
+    <changeSet author="Maksim 7398" id="009-foreignKey for user">
+        <addForeignKeyConstraint baseColumnNames="user_entity_id" baseTableName="users_watch_news"
+                                 constraintName="fko5yfqd4cyygae73wgm48269po" deferrable="false"
+                                 initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION"
+                                 referencedColumnNames="id" referencedTableName="users" validate="true"/>
     </changeSet>
 </databaseChangeLog>
