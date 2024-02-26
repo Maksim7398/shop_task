@@ -54,6 +54,7 @@
             <column name="order_price" type="numeric(38, 2)" remarks="total price of order"/>
             <column name="status" type="VARCHAR(255)" remarks="status of order"/>
             <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="create date of order"/>
+            <column name="update_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="update date of order"/>
             <column name="user_id" type="UUID" remarks="user id when placed an order"/>
         </createTable>
     </changeSet>
@@ -73,14 +74,6 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="ordered_product_pkey"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="order_id"
-                                 baseTableName="ordered_product"
-                                 constraintName="fk2nijit240cv1lx2ak4x5cakm8"
-                                 deferrable="false"
-                                 initiallyDeferred="false"
-                                 onDelete="NO ACTION"
-                                 onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="orders"
-                                 validate="true"/>
     </changeSet>
     <changeSet author="Maksim 7398" id="005-create-table-users">
         <preConditions onFail="MARK_RAN">
@@ -104,6 +97,23 @@
                                  onUpdate="NO ACTION"
                                  referencedColumnNames="id"
                                  referencedTableName="users"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet id="006-ddForeignKeyForOrderedProduct" author="Maksim 7398">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk2nijit240cv1lx2ak4x5cakm8"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="order_id"
+                                 baseTableName="ordered_product"
+                                 constraintName="fk2nijit240cv1lx2ak4x5cakm8"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 onDelete="NO ACTION"
+                                 onUpdate="NO ACTION"
+                                 referencedColumnNames="id"
+                                 referencedTableName="orders"
                                  validate="true"/>
     </changeSet>
 </databaseChangeLog>

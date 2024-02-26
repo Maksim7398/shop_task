@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -52,7 +53,7 @@ public class OrderController {
      * @param id     - id заказа в котором будет изменён статус
      * @return возращает информацию о том изменён статус заказа или нет
      */
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     public String changeStatus(@RequestBody Status status, @PathVariable UUID id) {
         return service.updateStatus(id, status);
     }
@@ -67,5 +68,18 @@ public class OrderController {
     @GetMapping("/{orderId}")
     public List<GetOrderProductResponse> getOrderProductsById(@RequestParam("userId") UUID userId, @PathVariable UUID orderId) {
         return orderMapper.convertListProductsOrderDtoToResponse(service.getOrderProductsByUserIdAndOrderId(userId, orderId));
+    }
+
+    /**
+     * Этот метод используется для изменения заказа
+     *
+     * @param createOrderRequest  - сущность создания заказа
+     * @param orderId - id заказа в который будет обновлён
+     * @return возращает информацию о том, то заказ обновлён
+     */
+    @PatchMapping("/change_order/{orderId}")
+    public String addProductInOrderExists(@RequestBody @Valid CreateOrderRequest createOrderRequest, @PathVariable UUID orderId) {
+        service.addProductInOrderExists(orderId,createOrderRequest);
+        return "Order was updated";
     }
 }

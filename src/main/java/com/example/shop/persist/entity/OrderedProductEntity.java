@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderedProductEntity {
+public class  OrderedProductEntity{
 
     @EmbeddedId
     private CompositeKey compositeKey;

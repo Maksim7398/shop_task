@@ -22,6 +22,8 @@ spring:
     enabled: true
     change-log: db/changelog/db.changelog-master.xml
 logging:
+  pattern:
+     console: '%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%mdc] %-5level %logger{40} - %msg%n'
   level:
     root: INFO
     org.springframework: INFO

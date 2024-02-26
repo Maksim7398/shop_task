@@ -60,41 +60,18 @@ public class OrderServiceImpl implements OrderService {
                                 .map(CreateOrderedProduct::getId).toList()
                 );
 
-        if (productEntities.isEmpty()){
+        if (productEntities.isEmpty()) {
             throw new ProductNotFoundException("Таких продуктов нет на складе");
         }
-
-        final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
-                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
         final OrderEntity order = OrderEntity.builder()
                 .user(user)
                 .createDate(LocalDateTime.now())
+                .updateDate(LocalDateTime.now())
                 .status(Status.CREATED).build();
+
         orderRepository.save(order);
-
-
-        final List<OrderedProductEntity> orderedProductEntitiesList = createOrderedProductList.stream()
-                .map(createOrderedProduct -> {
-                    final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
-                    product.setQuantity(
-                            Optional.of(product.getQuantity() - createOrderedProduct.getQuantity())
-                                    .filter(p -> !(product.getQuantity() <= createOrderedProduct.getQuantity())).orElseThrow(() ->
-                                    new ProductNotFoundException("в таком количестве, нет продуктов на складе")));
-                    return OrderedProductEntity.builder()
-                            .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
-                            .quantity(createOrderedProduct.getQuantity())
-                            .price(product.getPrice()).build();
-                }).toList();
-        order.setOrderedProducts(orderedProductEntitiesList);
-
-        final BigDecimal totalPrice = orderedProductEntitiesList
-                .stream().map(o -> o.getPrice().multiply(BigDecimal.valueOf(o.getQuantity()))).reduce(BigDecimal::add).get();
-        order.setOrderPrice(totalPrice);
-
-        productRepository.saveAll(productEntities);
-        orderToProductRepository.saveAll(orderedProductEntitiesList);
-
+        createOrderedProduct(productEntities, order, createOrderedProductList);
         return order.getId();
     }
 
@@ -117,5 +94,68 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderProductDto> getOrderProductsByUserIdAndOrderId(final UUID userId, final UUID orderId) {
         return orderRepository.findProductsByOrderId(userId, orderId);
+    }
+
+    @Override
+    @Transactional
+    public void addProductInOrderExists(UUID orderID, CreateOrderRequest createOrderedRequest) {
+        final OrderEntity orderEntity = orderRepository.findById(orderID).orElseThrow(()
+                -> new OrderNotFoundException("такого заказа не существует"));
+        if (orderEntity.getStatus() != Status.CREATED) {
+            throw new OrderNotFoundException("заказ с таким статусов: " + orderEntity.getStatus() + " нельзя изменить!");
+        }
+        final List<ProductEntity> productEntities = productRepository.findAllById(createOrderedRequest.getProducts().stream()
+                .map(CreateOrderedProduct::getId)
+                .toList());
+
+        final List<CreateOrderedProduct> createOrderedProductList = createOrderedRequest.getProducts();
+        orderRepository.save(orderEntity);
+        createOrderedProduct(productEntities, orderEntity, createOrderedProductList);
+        orderEntity.setUpdateDate(LocalDateTime.now());
+    }
+
+    @Override
+    public BigDecimal calculateTotalPrice(List<OrderedProductEntity> entities) {
+        return entities.stream()
+                .map(o -> o.getPrice()
+                        .multiply(BigDecimal.valueOf(o.getQuantity())))
+                .reduce(BigDecimal::add).get();
+    }
+
+    @Transactional
+    @Override
+    public void createOrderedProduct(List<ProductEntity> productEntities,
+                                     OrderEntity order,
+                                     List<CreateOrderedProduct> createOrderedProductList) {
+        final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
+                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
+
+        createOrderedProductList.forEach(createOrderedProduct -> {
+            final ProductEntity product = productIdToProductEntityMap.get(createOrderedProduct.getId());
+            product.setQuantity(
+                    Optional.of(product.getQuantity() - createOrderedProduct.getQuantity())
+                            .filter(p -> !(product.getQuantity() <= createOrderedProduct.getQuantity())).orElseThrow(() ->
+                                    new ProductNotFoundException("в таком количестве, нет продуктов на складе")));
+        });
+
+        if (order.getOrderedProducts() != null) {
+            order.getOrderedProducts().forEach(o -> {
+                createOrderedProductList.stream()
+                        .filter(c -> c.getId().equals(o.getCompositeKey().getProductId()))
+                        .forEach(v -> v.setQuantity(o.getQuantity() + v.getQuantity()));
+            });
+        }
+
+        final List<OrderedProductEntity> orderedProductEntities = createOrderedProductList.stream()
+                .map(createOrderedProduct -> {
+                    final ProductEntity productEntity = productIdToProductEntityMap.get(createOrderedProduct.getId());
+                    return OrderedProductEntity.builder()
+                            .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
+                            .quantity(createOrderedProduct.getQuantity())
+                            .price(productEntity.getPrice()).build();
+                }).toList();
+
+        order.setOrderPrice(calculateTotalPrice(orderedProductEntities));
+        orderToProductRepository.saveAll(orderedProductEntities);
     }
 }
