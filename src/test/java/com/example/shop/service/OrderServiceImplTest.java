@@ -1,10 +1,12 @@
 package com.example.shop.service;
 
 import com.example.shop.model.OrderBuilder;
+import com.example.shop.model.OrderedProductsEntityBuilder;
 import com.example.shop.model.OrdersInfo;
 import com.example.shop.model.ProductEntityBuilder;
 import com.example.shop.model.UserBuilder;
 import com.example.shop.persist.entity.OrderEntity;
+import com.example.shop.persist.entity.OrderedProductEntity;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.OrderRepository;
@@ -23,9 +25,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,23 +44,23 @@ public class OrderServiceImplTest {
         final ProductEntity productEntity = ProductEntityBuilder.aProductEntity().build();
         final UserEntity userEntity = UserBuilder.aUserEntity().build();
         final OrderEntity orderEntity = OrderBuilder.aOrderEntity().build();
+        final OrderedProductEntity orderedProductEntity = OrderedProductsEntityBuilder.aOrderedProductEntity().build();
 
         final List<String> innList = List.of("123456");
 
-        when(orderRepositoryMock.findAllById(anyIterable())).thenReturn(List.of(orderEntity));
+        when(orderedProductEntityRepository.findAll()).thenReturn(List.of(orderedProductEntity));
+        when(orderRepositoryMock.orderEntityListByProductId(productEntity.getId())).thenReturn(List.of(orderEntity));
         when(exchangeServiceClient.getAllInnByEmail(anyList())).thenReturn(innList);
 
         final Map<UUID, Set<OrdersInfo>> ordersInfoMap = orderServiceMock.findOrdersInfoByProducts();
-
-        verify(orderRepositoryMock).findAllById(anyIterable());
 
         assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getStatus).toList().get(0)
                 , orderEntity.getStatus());
         assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getUserName).toList().get(0)
                 , userEntity.getName());
         assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getUserInn).toList().get(0)
-                .replaceAll("]","")
-               .replaceAll("\\[",""), innList.get(0));
+                .replaceAll("]", "")
+                .replaceAll("\\[", ""), innList.get(0));
 
         System.out.println(ordersInfoMap);
     }
