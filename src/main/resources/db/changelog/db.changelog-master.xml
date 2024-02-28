@@ -3,5 +3,13 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
-        <include file="db/changelog/liquibase-initDB.xml"/>
+    <include file="/db/changelog/001-create-table-product.xml"/>
+    <include file="/db/changelog/002-create-table-orders.xml"/>
+    <include file="/db/changelog/003-create-table-ordered-product.xml"/>
+    <include file="/db/changelog/004-create-table-users.xml"/>
+    <include file="/db/changelog/005-create-table-news.xml"/>
+    <include file="/db/changelog/006-create-table users_watch_news.xml"/>
+    <include file="/db/changelog/007-foreignKey for news.xml"/>
+    <include file="/db/changelog/008-foreignKey for user.xml"/>
+    <include file="/db/changelog/009-unique-constraint-by-users-for-email.xml"/>
 </databaseChangeLog>
