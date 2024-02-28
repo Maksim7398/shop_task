@@ -133,6 +133,12 @@ public class OrderServiceImpl implements OrderService {
         final Map<UUID, List<OrderEntity>> mapProductIdOnListOrderEntity = mapProductIdOnOrderId.entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().stream().map(orderEntityMap::get).toList()));
 
+        final Map<String, String> allInnByEmailMap = exchangeServiceClient.getAllInnByEmail(mapProductIdOnListOrderEntity.values().stream()
+                .flatMap(o -> o.stream()
+                .map(OrderEntity::getUser))
+                .map(UserEntity::getEmail)
+                .toList());
+
         return mapProductIdOnListOrderEntity.entrySet().stream().collect(Collectors.toMap(
                 Map.Entry::getKey,
                 v -> v.getValue().stream().map(o ->
@@ -142,7 +148,7 @@ public class OrderServiceImpl implements OrderService {
                                 o.getOrderPrice(),
                                 o.getCreateDate(),
                                 o.getUser().getName(),
-                                exchangeServiceClient.getInnByEmail(o.getUser().getEmail()))
+                                allInnByEmailMap.get(o.getUser().getEmail()))
                 ).toList()
         ));
     }

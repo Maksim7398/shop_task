@@ -31,9 +31,4 @@ public class ExchangeRateClientStub implements ExchangeServiceClient {
     public Map<String,String> getAllInnByEmail(List<String> email) {
         return Map.of();
     }
-
-    @Override
-    public String getInnByEmail(String email) {
-        return email;
-    }
 }

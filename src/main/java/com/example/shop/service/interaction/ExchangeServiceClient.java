@@ -10,6 +10,4 @@ public interface ExchangeServiceClient {
     ExchangeRateValue getExchangeRate();
 
     Map<String,String> getAllInnByEmail(List<String> email);
-
-    String getInnByEmail(String email);
 }

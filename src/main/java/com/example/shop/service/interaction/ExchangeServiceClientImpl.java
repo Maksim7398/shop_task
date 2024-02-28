@@ -1,8 +1,6 @@
 package com.example.shop.service.interaction;
 
 import com.example.shop.currency.request_filter.ExchangeRateValue;
-import com.example.shop.persist.entity.UserEntity;
-import com.example.shop.persist.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
@@ -22,8 +20,6 @@ import java.util.Map;
 public class ExchangeServiceClientImpl implements ExchangeServiceClient {
 
     private final RestTemplate restTemplate;
-
-    private final UserRepository userRepository;
 
     @Override
     @Nullable
@@ -52,15 +48,5 @@ public class ExchangeServiceClientImpl implements ExchangeServiceClient {
 
             return Map.of();
         }
-    }
-
-    @Override
-    public String getInnByEmail(String email) {
-        final Map<String, String> allInnByEmail =
-                getAllInnByEmail(userRepository.findAll().stream()
-                        .map(UserEntity::getEmail)
-                        .toList());
-
-        return allInnByEmail.get(email);
     }
 }
