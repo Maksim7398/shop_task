@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @ConditionalOnProperty(value = "interaction.rate.stub")
@@ -27,7 +28,12 @@ public class ExchangeRateClientStub implements ExchangeServiceClient {
     }
 
     @Override
-    public List<String> getAllInnByEmail(List<String> email) {
-        return List.of();
+    public Map<String,String> getAllInnByEmail(List<String> email) {
+        return Map.of();
+    }
+
+    @Override
+    public String getInnByEmail(String email) {
+        return email;
     }
 }

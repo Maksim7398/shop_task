@@ -22,5 +22,5 @@ public interface OrderService {
 
     List<OrderProductDto> getOrderProductsByUserIdAndOrderId(UUID userId, UUID orderId);
 
-    Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts();
+    Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts();
 }

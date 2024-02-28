@@ -19,13 +19,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -45,22 +44,21 @@ public class OrderServiceImplTest {
         final UserEntity userEntity = UserBuilder.aUserEntity().build();
         final OrderEntity orderEntity = OrderBuilder.aOrderEntity().build();
         final OrderedProductEntity orderedProductEntity = OrderedProductsEntityBuilder.aOrderedProductEntity().build();
-
-        final List<String> innList = List.of("123456");
+        final Map<String, String> mapEmailOnInn = new HashMap<>();
+        mapEmailOnInn.put(userEntity.getEmail(), "111111");
 
         when(orderedProductEntityRepository.findAll()).thenReturn(List.of(orderedProductEntity));
-        when(orderRepositoryMock.orderEntityListByProductId(productEntity.getId())).thenReturn(List.of(orderEntity));
-        when(exchangeServiceClient.getAllInnByEmail(anyList())).thenReturn(innList);
+        when(orderRepositoryMock.findAll()).thenReturn(List.of(orderEntity));
+        when(exchangeServiceClient.getInnByEmail(userEntity.getEmail())).thenReturn(mapEmailOnInn.get(userEntity.getEmail()));
 
-        final Map<UUID, Set<OrdersInfo>> ordersInfoMap = orderServiceMock.findOrdersInfoByProducts();
+        final Map<UUID, List<OrdersInfo>> ordersInfoMap = orderServiceMock.findOrdersInfoByProducts();
 
         assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getStatus).toList().get(0)
                 , orderEntity.getStatus());
         assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getUserName).toList().get(0)
                 , userEntity.getName());
-        assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getUserInn).toList().get(0)
-                .replaceAll("]", "")
-                .replaceAll("\\[", ""), innList.get(0));
+        assertEquals(ordersInfoMap.get(productEntity.getId()).stream().map(OrdersInfo::getUserInn).toList().get(0),
+                mapEmailOnInn.get(userEntity.getEmail()));
 
         System.out.println(ordersInfoMap);
     }

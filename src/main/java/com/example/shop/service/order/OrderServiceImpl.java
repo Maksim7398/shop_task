@@ -27,13 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -124,28 +120,30 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public Map<UUID, Set<OrdersInfo>> findOrdersInfoByProducts() {
-        final Set<OrderedProductEntity> orderedProductEntities = new HashSet<>(orderedProductEntityRepository.findAll());
-        final Map<UUID, Set<OrdersInfo>> map = new HashMap<>();
+    public Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts() {
+        final List<OrderedProductEntity> orderedProductEntities = orderedProductEntityRepository.findAll();
+        final Map<UUID, OrderEntity> orderEntityMap = orderRepository.findAll().stream().collect(Collectors.toMap(OrderEntity::getId, Function.identity()));
 
-        orderedProductEntities.forEach(p -> {
-            final Set<OrdersInfo> ordersInfoList = new HashSet<>();
-            final List<OrderEntity> orderEntities = orderRepository.orderEntityListByProductId(p.getCompositeKey().getProductId());
-            orderEntities.forEach(o -> {
-                ordersInfoList.add(new OrdersInfo(
-                        o.getId(),
-                        o.getStatus(),
-                        o.getOrderPrice(),
-                        o.getCreateDate(),
-                        o.getUser().getName(),
-                        Arrays.toString(exchangeServiceClient.getAllInnByEmail(List.of(o.getUser().getEmail())).toArray()))
-                );
-            });
-            map.put(p.getCompositeKey().getProductId(), ordersInfoList);
-        });
+        final Map<UUID, List<UUID>> mapProductIdOnOrderId = orderedProductEntities.stream()
+                .map(OrderedProductEntity::getCompositeKey)
+                .collect(Collectors.groupingBy(CompositeKey::getProductId)
+                ).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().stream().map(CompositeKey::getOrderId).toList()));
 
-        return map;
+        final Map<UUID, List<OrderEntity>> mapProductIdOnListOrderEntity = mapProductIdOnOrderId.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().stream().map(orderEntityMap::get).toList()));
+
+        return mapProductIdOnListOrderEntity.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                v -> v.getValue().stream().map(o ->
+                        new OrdersInfo(
+                                o.getId(),
+                                o.getStatus(),
+                                o.getOrderPrice(),
+                                o.getCreateDate(),
+                                o.getUser().getName(),
+                                exchangeServiceClient.getInnByEmail(o.getUser().getEmail()))
+                ).toList()
+        ));
     }
-
-
 }
