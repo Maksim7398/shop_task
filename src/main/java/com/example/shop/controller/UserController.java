@@ -6,8 +6,6 @@ import com.example.shop.mapper.OrderMapper;
 import com.example.shop.service.order.OrderService;
 import com.example.shop.service.user.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,34 +48,8 @@ public class UserController {
      * @param userId - id пользователя по которому нужно получить заказы
      * @return все заказы которые есть у пользователя
      */
-    @GetMapping("/{userId}")
+    @PostMapping("/{userId}")
     public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId) {
         return orderMapper.convertDtoToResponse(orderService.getOrdersByUserId(userId));
-    }
-
-    /**
-     * Этот метод просматривает новость у пользователя
-     *
-     * @param userId - id пользователя по которому будет просмотренна новость
-     * @param newsId - id новости которая будет просмотренна
-     * @return id новости которая просмотренна
-     */
-    @GetMapping("/{userId}/{newsId}")
-    public String watchNews(@PathVariable UUID userId, @PathVariable UUID newsId){
-        userService.watchNews(userId, newsId);
-        return "Новость " + newsId + " просмотрена";
-    }
-
-    /**
-     * Этот метод отменяет просмотр новости у пользователя
-     *
-     * @param userId - id пользователя по которому будет отменёнён просмотр новости
-     * @param newsId - id новости котрая будет помеченной не просмотренной
-     * @return id новости у которой отменён просмотр
-     */
-    @DeleteMapping("/{userId}/{newsId}")
-    public String unwatchNews(@PathVariable UUID userId, @PathVariable UUID newsId){
-        userService.unwatchNews(userId, newsId);
-        return "Новость " + newsId + " не просмотрена";
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shop.service.news;
 
+import com.example.shop.controller.request.CreateNewsRequest;
 import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.NewsMapper;
 import com.example.shop.model.NewsDto;
@@ -26,13 +27,14 @@ public class NewsServiceImpl implements NewsService {
     private final UserRepository userRepository;
 
     @Override
-    public UUID createNews(final NewsDto newsDto) {
-        final NewsEntity newsEntity = newsMapper.newsEntity(newsDto);
+    public UUID createNews(final CreateNewsRequest createNewsRequest) {
+        final NewsEntity newsEntity = newsMapper.newsEntity(newsMapper.newsDto(createNewsRequest));
         newsEntity.setCreateDate(LocalDateTime.now());
         newsRepository.save(newsEntity);
 
         return newsEntity.getId();
     }
+
     @Transactional
     @Override
     public List<NewsDto> getUnwatchNewsForUser(final UUID userId) {
