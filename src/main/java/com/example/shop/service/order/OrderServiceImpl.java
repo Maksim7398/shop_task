@@ -122,34 +122,34 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts() {
         final List<OrderedProductEntity> orderedProductEntities = orderedProductEntityRepository.findAll();
-        final Map<UUID, OrderEntity> orderEntityMap = orderRepository.findAll().stream().collect(Collectors.toMap(OrderEntity::getId, Function.identity()));
+        final List<OrderEntity> orderEntities = orderRepository.findAll();
+        final Map<UUID, OrderEntity> orderEntityMap = orderEntities.stream().collect(Collectors.toMap(OrderEntity::getId, Function.identity()));
 
-        final Map<UUID, List<UUID>> mapProductIdOnOrderId = orderedProductEntities.stream()
-                .map(OrderedProductEntity::getCompositeKey)
-                .collect(Collectors.groupingBy(CompositeKey::getProductId)
-                ).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().stream().map(CompositeKey::getOrderId).toList()));
-
-        final Map<UUID, List<OrderEntity>> mapProductIdOnListOrderEntity = mapProductIdOnOrderId.entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, v -> v.getValue().stream().map(orderEntityMap::get).toList()));
-
-        final Map<String, String> allInnByEmailMap = exchangeServiceClient.getAllInnByEmail(mapProductIdOnListOrderEntity.values().stream()
-                .flatMap(o -> o.stream()
-                .map(OrderEntity::getUser))
-                .map(UserEntity::getEmail)
+        final Map<String, String> allInnByEmailMap = exchangeServiceClient.getAllInnByEmail(orderEntities.stream()
+                .map(u -> u.getUser().getEmail())
                 .toList());
 
-        return mapProductIdOnListOrderEntity.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                v -> v.getValue().stream().map(o ->
-                        new OrdersInfo(
-                                o.getId(),
-                                o.getStatus(),
-                                o.getOrderPrice(),
-                                o.getCreateDate(),
-                                o.getUser().getName(),
-                                allInnByEmailMap.get(o.getUser().getEmail()))
-                ).toList()
-        ));
+        if (allInnByEmailMap.isEmpty()){
+            throw new UserNotFoundException("map is empty, second service not found");
+        }
+
+        return orderedProductEntities.stream()
+                .map(OrderedProductEntity::getCompositeKey)
+                .collect(Collectors.groupingBy(
+                        CompositeKey::getProductId,
+                        Collectors.mapping(
+                                compositeKey -> {
+                                    final OrderEntity orderEntity = orderEntityMap.get(compositeKey.getOrderId());
+                                    return new OrdersInfo(
+                                            orderEntity.getId(),
+                                            orderEntity.getStatus(),
+                                            orderEntity.getOrderPrice(),
+                                            orderEntity.getCreateDate(),
+                                            orderEntity.getUser().getName(),
+                                            allInnByEmailMap.get(orderEntity.getUser().getEmail()));
+                                },
+                                Collectors.toList()
+                        )
+                ));
     }
 }
