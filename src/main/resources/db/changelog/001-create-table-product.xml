@@ -1,0 +1,41 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="Maksim7398" id="001-create-table-product">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="product"/>
+            </not>
+        </preConditions>
+        <createTable tableName="product">
+            <column name="id" remarks="its unique id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="product_pkey"/>
+            </column>
+            <column name="title" type="VARCHAR(255)" remarks="name of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="NUMERIC(7,2)" remarks="price of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="article" type="VARCHAR(255)" remarks="article of products">
+                <constraints unique="true" nullable="false"/>
+            </column>
+            <column name="quantity" type="INTEGER" remarks="count of products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="create_date" type="TIMESTAMP WITHOUT TIME ZONE" remarks="time of burn products">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_quantity_change" type="TIMESTAMP WITHOUT TIME ZONE"
+                    remarks="date change when product quantity changes">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category" type="VARCHAR(255)" remarks="types of products"/>
+            <column name="description" type="VARCHAR(1000)" remarks="description and characteristics of products"/>
+            <column name="is_available" type="BOOLEAN" remarks="is product isAvailable">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
