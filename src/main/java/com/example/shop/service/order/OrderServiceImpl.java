@@ -9,6 +9,7 @@ import com.example.shop.exception.UserNotFoundException;
 import com.example.shop.mapper.OrderMapper;
 import com.example.shop.model.OrderDto;
 import com.example.shop.model.OrderProductDto;
+import com.example.shop.model.OrdersInfo;
 import com.example.shop.model.Status;
 import com.example.shop.persist.entity.CompositeKey;
 import com.example.shop.persist.entity.OrderEntity;
@@ -16,9 +17,10 @@ import com.example.shop.persist.entity.OrderedProductEntity;
 import com.example.shop.persist.entity.ProductEntity;
 import com.example.shop.persist.entity.UserEntity;
 import com.example.shop.persist.repository.OrderRepository;
-import com.example.shop.persist.repository.OrderToProductRepository;
+import com.example.shop.persist.repository.OrderedProductEntityRepository;
 import com.example.shop.persist.repository.ProductRepository;
 import com.example.shop.persist.repository.UserRepository;
+import com.example.shop.service.interaction.ExchangeServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,15 +44,17 @@ public class OrderServiceImpl implements OrderService {
 
     private final ProductRepository productRepository;
 
-    private final OrderToProductRepository orderToProductRepository;
+    private final OrderedProductEntityRepository orderedProductEntityRepository;
 
     private final OrderMapper orderMapper;
 
+    private final ExchangeServiceClient exchangeServiceClient;
+
     @Override
     @Transactional
-    public UUID save(final CreateOrderRequest request, final UUID user_id) {
+    public UUID save(final CreateOrderRequest request, final UUID userId) {
         final UserEntity user = userRepository
-                .findById(user_id).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
+                .findById(userId).orElseThrow(() -> new UserNotFoundException("user with this ID not found"));
 
         final List<CreateOrderedProduct> createOrderedProductList = request.getProducts();
         final List<ProductEntity> productEntities =
@@ -88,8 +91,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderDto> getOrdersByUserId(final UUID uuid) {
-        return orderMapper.convertEntityToDto(orderRepository.findOrdersByUserId(uuid));
+    public List<OrderDto> getOrdersByUserId(final UUID userId) {
+        return orderMapper.convertEntityToDto(orderRepository.findOrdersByUserId(userId));
     }
 
     @Override
@@ -158,5 +161,40 @@ public class OrderServiceImpl implements OrderService {
 
         order.setOrderPrice(calculateTotalPrice(orderedProductEntities));
         orderToProductRepository.saveAll(orderedProductEntities);
+    }
+
+    @Override
+    @Transactional
+    public Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts() {
+        final List<OrderedProductEntity> orderedProductEntities = orderedProductEntityRepository.findAll();
+        final List<OrderEntity> orderEntities = orderRepository.findAll();
+        final Map<UUID, OrderEntity> orderEntityMap = orderEntities.stream().collect(Collectors.toMap(OrderEntity::getId, Function.identity()));
+
+        final Map<String, String> allInnByEmailMap = exchangeServiceClient.getAllInnByEmail(orderEntities.stream()
+                .map(u -> u.getUser().getEmail())
+                .toList());
+
+        if (allInnByEmailMap.isEmpty()){
+            throw new UserNotFoundException("map is empty, second service not found");
+        }
+
+        return orderedProductEntities.stream()
+                .map(OrderedProductEntity::getCompositeKey)
+                .collect(Collectors.groupingBy(
+                        CompositeKey::getProductId,
+                        Collectors.mapping(
+                                compositeKey -> {
+                                    final OrderEntity orderEntity = orderEntityMap.get(compositeKey.getOrderId());
+                                    return new OrdersInfo(
+                                            orderEntity.getId(),
+                                            orderEntity.getStatus(),
+                                            orderEntity.getOrderPrice(),
+                                            orderEntity.getCreateDate(),
+                                            orderEntity.getUser().getName(),
+                                            allInnByEmailMap.get(orderEntity.getUser().getEmail()));
+                                },
+                                Collectors.toList()
+                        )
+                ));
     }
 }

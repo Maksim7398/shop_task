@@ -11,6 +11,10 @@ import com.example.shop.persist.entity.ProductEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
+import com.example.shop.model.OrdersInfo;
+
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 public interface OrderService {
@@ -30,4 +34,6 @@ public interface OrderService {
                               List<CreateOrderedProduct> createOrderedProductList);
 
     void addProductInOrderExists(UUID orderID, CreateOrderRequest createOrderRequest);
+
+    Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts();
 }

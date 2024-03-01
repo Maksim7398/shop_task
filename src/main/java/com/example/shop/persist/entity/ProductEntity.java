@@ -48,5 +48,4 @@ public class ProductEntity {
     private LocalDateTime createDate;
     @Column(name = "is_available")
     private Boolean isAvailable;
-
 }
