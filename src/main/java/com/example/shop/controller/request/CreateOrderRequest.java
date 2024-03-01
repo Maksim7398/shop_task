@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class CreateOrderRequest {
     @NotEmpty
-    private List<CreateOrderedProduct> products;
+    private final List<CreateOrderedProduct> products;
 }
