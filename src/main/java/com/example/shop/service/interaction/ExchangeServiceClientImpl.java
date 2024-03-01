@@ -5,10 +5,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,4 +36,17 @@ public class ExchangeServiceClientImpl implements ExchangeServiceClient {
         }
     }
 
+    @Override
+    public Map<String, String> getAllInnByEmail(List<String> email) {
+        final String uri = "/user/inn";
+        try {
+            final HttpEntity<List<String>> httpEntity = new HttpEntity<>(email);
+
+            return restTemplate.postForObject(uri, httpEntity, Map.class);
+        } catch (Exception ex) {
+            log.error("Ошибка при подключению к сервису: " + ex.getMessage());
+
+            return Map.of();
+        }
+    }
 }

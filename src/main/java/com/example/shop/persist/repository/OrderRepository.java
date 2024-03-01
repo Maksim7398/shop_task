@@ -21,4 +21,9 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
             "join OrderEntity o ON o.id = op.compositeKey.orderId " +
             "WHERE  op.compositeKey.orderId = :orderId AND o.user.id = :userId")
     List<OrderProductDto> findProductsByOrderId(UUID userId, UUID orderId);
+
+    @Query("from OrderEntity o " +
+            "join OrderedProductEntity op ON op.compositeKey.orderId = o.id " +
+            "where op.compositeKey.productId = :productId")
+    List<OrderEntity> orderEntityListByProductId(UUID productId);
 }
