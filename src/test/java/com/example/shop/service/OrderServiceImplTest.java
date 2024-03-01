@@ -39,19 +39,19 @@ public class OrderServiceImplTest {
     @Mock
     private OrderRepository orderRepositoryMock;
     @Mock
-    private OrderedProductEntityRepository orderedProductEntityRepository;
+    private OrderedProductEntityRepository orderedProductEntityRepositoryMock;
     @Mock
-    private ExchangeServiceClient exchangeServiceClient;
+    private ExchangeServiceClient exchangeServiceClientMock;
     @InjectMocks
-    private OrderServiceImpl orderServiceMock;
+    private OrderServiceImpl underTest;
 
     @Test
     public void orderInfoByProduct_test() {
-        final ProductEntity productEntity = ProductEntityBuilder.aProductEntity().build();
-        final ProductEntity productEntity2 = ProductEntityBuilder.aProductEntity().withId(UUID.randomUUID()).build();
-        final UserEntity userEntity = UserBuilder.aUserEntity().build();
-        final OrderEntity orderEntity = OrderBuilder.aOrderEntity().build();
-        final OrderEntity orderEntity2 = OrderBuilder.aOrderEntity()
+        final ProductEntity productEntityStub = ProductEntityBuilder.aProductEntity().build();
+        final ProductEntity productEntityStub2 = ProductEntityBuilder.aProductEntity().withId(UUID.randomUUID()).build();
+        final UserEntity userEntityStub = UserBuilder.aUserEntity().build();
+        final OrderEntity orderEntityStub = OrderBuilder.aOrderEntity().build();
+        final OrderEntity orderEntityStub2 = OrderBuilder.aOrderEntity()
                 .withID(UUID.randomUUID())
                 .withPrice(new BigDecimal("1000"))
                 .withOrderedProduct(List.of(OrderedProductEntity.builder().build()))
@@ -60,49 +60,49 @@ public class OrderServiceImplTest {
                 .withStatus(Status.REJECTED)
                 .build();
 
-        final OrderedProductEntity orderedProductEntity = OrderedProductsEntityBuilder.aOrderedProductEntity().build();
-        final OrderedProductEntity orderedProductEntity2 = OrderedProductEntity.builder()
-                .compositeKey(new CompositeKey(orderEntity2.getId(), productEntity.getId()))
+        final OrderedProductEntity orderedProductEntityStub = OrderedProductsEntityBuilder.aOrderedProductEntity().build();
+        final OrderedProductEntity orderedProductEntityStub2 = OrderedProductEntity.builder()
+                .compositeKey(new CompositeKey(orderEntityStub2.getId(), productEntityStub.getId()))
                 .price(new BigDecimal("100"))
                 .quantity(50)
                 .build();
         final OrderedProductEntity orderedProductEntity3 = OrderedProductEntity.builder()
-                .compositeKey(new CompositeKey(orderEntity2.getId(), productEntity2.getId()))
+                .compositeKey(new CompositeKey(orderEntityStub2.getId(), productEntityStub2.getId()))
                 .price(new BigDecimal("100"))
                 .quantity(50)
                 .build();
-        final Map<String, String> mapEmailOnInn = new HashMap<>();
-        mapEmailOnInn.put(userEntity.getEmail(), "111111");
-        mapEmailOnInn.put(orderEntity2.getUser().getEmail(), "222222");
+        final Map<String, String> mapEmailOnInnStub = new HashMap<>();
+        mapEmailOnInnStub.put(userEntityStub.getEmail(), "111111");
+        mapEmailOnInnStub.put(orderEntityStub2.getUser().getEmail(), "222222");
 
-        when(orderedProductEntityRepository.findAll()).thenReturn(List.of(orderedProductEntity, orderedProductEntity2, orderedProductEntity3));
-        when(orderRepositoryMock.findAll()).thenReturn(List.of(orderEntity, orderEntity2));
-        when(exchangeServiceClient.getAllInnByEmail(anyList())).thenReturn(mapEmailOnInn);
+        when(orderedProductEntityRepositoryMock.findAll()).thenReturn(List.of(orderedProductEntityStub, orderedProductEntityStub2, orderedProductEntity3));
+        when(orderRepositoryMock.findAll()).thenReturn(List.of(orderEntityStub, orderEntityStub2));
+        when(exchangeServiceClientMock.getAllInnByEmail(anyList())).thenReturn(mapEmailOnInnStub);
 
-        final Map<UUID, List<OrdersInfo>> actual = orderServiceMock.findOrdersInfoByProducts();
+        final Map<UUID, List<OrdersInfo>> actual = underTest.findOrdersInfoByProducts();
 
-        verify(exchangeServiceClient).getAllInnByEmail(anyList());
+        verify(exchangeServiceClientMock).getAllInnByEmail(anyList());
 
-        assertThat(actual.get(productEntity.getId()))
+        assertThat(actual.get(productEntityStub.getId()))
                 .anySatisfy(ordersInfo ->
                 {
-                    assertEquals(orderEntity.getStatus(), ordersInfo.getStatus());
-                    assertEquals(userEntity.getName(), ordersInfo.getUserName());
-                    assertEquals(mapEmailOnInn.get(userEntity.getEmail()), ordersInfo.getUserInn());
+                    assertEquals(orderEntityStub.getStatus(), ordersInfo.getStatus());
+                    assertEquals(userEntityStub.getName(), ordersInfo.getUserName());
+                    assertEquals(mapEmailOnInnStub.get(userEntityStub.getEmail()), ordersInfo.getUserInn());
                 })
                 .anySatisfy(ordersInfo ->
                 {
-                    assertEquals(orderEntity2.getStatus(), ordersInfo.getStatus());
-                    assertEquals(orderEntity2.getUser().getName(), ordersInfo.getUserName());
-                    assertEquals(mapEmailOnInn.get(orderEntity2.getUser().getEmail()), ordersInfo.getUserInn());
+                    assertEquals(orderEntityStub2.getStatus(), ordersInfo.getStatus());
+                    assertEquals(orderEntityStub2.getUser().getName(), ordersInfo.getUserName());
+                    assertEquals(mapEmailOnInnStub.get(orderEntityStub2.getUser().getEmail()), ordersInfo.getUserInn());
                 });
 
-        assertThat(actual.get(productEntity2.getId()))
+        assertThat(actual.get(productEntityStub2.getId()))
                 .anySatisfy(ordersInfo ->
                 {
-                    assertEquals(orderEntity2.getStatus(), ordersInfo.getStatus());
-                    assertEquals(orderEntity2.getUser().getName(), ordersInfo.getUserName());
-                    assertEquals(mapEmailOnInn.get(orderEntity2.getUser().getEmail()), ordersInfo.getUserInn());
+                    assertEquals(orderEntityStub2.getStatus(), ordersInfo.getStatus());
+                    assertEquals(orderEntityStub2.getUser().getName(), ordersInfo.getUserName());
+                    assertEquals(mapEmailOnInnStub.get(orderEntityStub2.getUser().getEmail()), ordersInfo.getUserInn());
                 });
     }
 }
