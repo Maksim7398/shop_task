@@ -2,6 +2,7 @@ package com.example.shop.controller;
 
 
 import com.example.shop.controller.request.CreateOrderRequest;
+import com.example.shop.controller.request.UpdateOrderRequest;
 import com.example.shop.controller.response.GetOrderProductResponse;
 import com.example.shop.controller.response.GetOrderResponse;
 import com.example.shop.mapper.OrderMapper;
@@ -54,7 +55,7 @@ public class OrderController {
      * @param orderId - id заказа в котором будет изменён статус
      * @return возращает информацию о том изменён статус заказа или нет
      */
-    @PatchMapping("/order/{orderId}")
+    @PatchMapping("/order/status/{orderId}")
     public String changeStatus(@RequestBody Status status, @PathVariable UUID orderId) {
         return service.updateStatus(orderId, status);
     }
@@ -72,16 +73,15 @@ public class OrderController {
     }
 
     /**
-     * Этот метод используется для изменения заказа
+     * Этот метод используется для обавления товаров в заказ
      *
-     * @param createOrderRequest  - сущность создания заказа
+     * @param updateOrderRequest  - сущность обновления заказа
      * @param orderId - id заказа в который будет обновлён
-     * @return возращает информацию о том, то заказ обновлён
+     * @return возращает айди заказа
      */
-    @PatchMapping("/change_order/{orderId}")
-    public String addProductInOrderExists(@RequestBody @Valid CreateOrderRequest createOrderRequest, @PathVariable UUID orderId) {
-        service.addProductInOrderExists(orderId,createOrderRequest);
-        return "Order was updated";
+    @PatchMapping("/order/{orderId}")
+    public UUID addProductInOrderExists(@RequestBody @Valid UpdateOrderRequest updateOrderRequest, @PathVariable UUID orderId) {
+        return service.addProductInOrderExists(orderId,updateOrderRequest);
     }
 
     /**

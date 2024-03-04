@@ -1,13 +1,11 @@
 package com.example.shop.service.order;
 
 import com.example.shop.controller.request.CreateOrderRequest;
-import com.example.shop.controller.request.CreateOrderedProduct;
+import com.example.shop.controller.request.UpdateOrderRequest;
 import com.example.shop.model.OrderDto;
 import com.example.shop.model.OrderProductDto;
 import com.example.shop.model.Status;
-import com.example.shop.persist.entity.OrderEntity;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.example.shop.model.OrdersInfo;
@@ -25,11 +23,7 @@ public interface OrderService {
 
     List<OrderProductDto> getOrderProductsByUserIdAndOrderId(UUID userId, UUID orderId);
 
-    BigDecimal calculateTotalPrice(OrderEntity orderEntity);
-
-    void createOrderedProduct(OrderEntity order, List<CreateOrderedProduct> createOrderedProductList);
-
-    void addProductInOrderExists(UUID orderID, CreateOrderRequest createOrderRequest);
+    UUID addProductInOrderExists(UUID orderID, UpdateOrderRequest updateOrderRequest);
 
     Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts();
 }

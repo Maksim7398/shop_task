@@ -11,6 +11,4 @@ import java.util.UUID;
 
 @Repository
 public interface OrderedProductEntityRepository extends JpaRepository<OrderedProductEntity, CompositeKey> {
-    @Query("from OrderedProductEntity o where o.compositeKey.orderId = :orderId")
-    List<OrderedProductEntity> findOrderedProductEntityByOrderId(UUID orderId);
 }
