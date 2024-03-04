@@ -171,13 +171,13 @@ public class OrderServiceImpl implements OrderService {
         }).collect(Collectors.groupingBy(o -> o.getCompositeKey().getProductId()));
 
         if (orderedProductEntityList != null) {
-            orderedProductEntityList.forEach(o -> {
-                collect.entrySet().stream().filter(k -> o.getCompositeKey().getProductId().equals(k.getKey()))
-                        .map(Map.Entry::getValue).forEach(op -> {
-                            op.forEach(e -> e.setQuantity(o.getQuantity() + e.getQuantity()));
-                        });
-            });
+            orderedProductEntityList.forEach(o ->
+                    collect.entrySet().stream()
+                            .filter(k -> o.getCompositeKey().getProductId().equals(k.getKey()))
+                            .map(Map.Entry::getValue).forEach(op ->
+                                    op.forEach(e -> e.setQuantity(o.getQuantity() + e.getQuantity()))));
         }
+
         final List<OrderedProductEntity> orderedProductEntities = collect.values().stream().flatMap(Collection::stream).toList();
 
         orderedProductEntityRepository.saveAll(orderedProductEntities);
