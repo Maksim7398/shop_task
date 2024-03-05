@@ -7,6 +7,7 @@ public enum Status {
     CANCELLED,
     APPROVED,
     DONE,
+    DELETE,
     REJECTED;
 
     public @Nullable
@@ -18,5 +19,4 @@ public enum Status {
         }
         return null;
     }
-
 }

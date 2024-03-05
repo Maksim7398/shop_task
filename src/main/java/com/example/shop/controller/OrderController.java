@@ -1,6 +1,5 @@
 package com.example.shop.controller;
 
-
 import com.example.shop.controller.request.CreateOrderRequest;
 import com.example.shop.controller.request.UpdateOrderRequest;
 import com.example.shop.controller.response.GetOrderProductResponse;
@@ -11,6 +10,7 @@ import com.example.shop.model.Status;
 import com.example.shop.service.order.OrderService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -103,5 +103,16 @@ public class OrderController {
     @GetMapping("/orders/{userId}")
     public List<GetOrderResponse> getOrdersByUserId(@PathVariable UUID userId) {
         return orderMapper.convertDtoToResponse(service.getOrdersByUserId(userId));
+    }
+
+    /**
+     * метод используется для удаления заказа
+     *
+     * @param orderId - id заказа по коорому будет удаление
+     * @return возращает айди заказа который удалён
+     */
+    @DeleteMapping("/order/{orderId}")
+    public UUID deleteOrder(@PathVariable UUID orderId){
+        return service.deleteOrder(orderId);
     }
 }

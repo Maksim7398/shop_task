@@ -77,6 +77,7 @@ public class OrderServiceImpl implements OrderService {
         final OrderEntity orderEntity = orderRepository.findById(orderId).orElseThrow(() -> new OrderNotFoundException("order with this ID not found"));
         if (status != null) {
             orderEntity.setStatus(status);
+            orderEntity.setUpdateDate(LocalDateTime.now());
             orderRepository.save(orderEntity);
             return "Статус заказа изменён на: " + orderEntity.getStatus();
         }
@@ -106,6 +107,30 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(orderEntity);
         createOrderedProduct(orderEntity, createOrderedProductList);
         orderEntity.setUpdateDate(LocalDateTime.now());
+
+        return orderEntity.getId();
+    }
+
+    @Override
+    public UUID deleteOrder(UUID orderID) {
+        final OrderEntity orderEntity = orderRepository.findByIdFetchOrderedProducts(orderID).orElseThrow(()
+                -> new OrderNotFoundException("такого заказа не существует"));
+        if (orderEntity.getStatus() == Status.DELETE) {
+            throw new OrderNotFoundException("Этот заказ уже удалён: " + orderEntity.getStatus());
+        }
+        final List<OrderedProductEntity> orderedProductEntities = orderEntity.getOrderedProducts();
+
+        final List<ProductEntity> productEntities = productRepository.findAllById(orderedProductEntities.stream()
+                .map(o -> o.getCompositeKey().getProductId())
+                .toList());
+
+        final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
+                .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
+        orderedProductEntities.forEach(ope -> {
+            final ProductEntity productEntity = productIdToProductEntityMap.get(ope.getCompositeKey().getProductId());
+            productEntity.setQuantity(productEntity.getQuantity() + ope.getQuantity());
+        });
+        updateStatus(orderID, Status.DELETE);
 
         return orderEntity.getId();
     }

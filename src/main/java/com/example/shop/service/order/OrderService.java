@@ -25,5 +25,7 @@ public interface OrderService {
 
     UUID addProductInOrderExists(UUID orderID, UpdateOrderRequest updateOrderRequest);
 
+    UUID deleteOrder(UUID orderID);
+
     Map<UUID, List<OrdersInfo>> findOrdersInfoByProducts();
 }
