@@ -28,10 +28,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -154,9 +154,15 @@ public class OrderServiceImpl implements OrderService {
         final Map<UUID, ProductEntity> productIdToProductEntityMap = productEntities.stream()
                 .collect(Collectors.toMap(ProductEntity::getId, Function.identity()));
 
-        final List<OrderedProductEntity> orderedProductEntityList = order.getOrderedProducts();
 
-        final Map<UUID, List<OrderedProductEntity>> collect = createOrderedProductList.stream().map(createOrderedProduct -> {
+        final List<OrderedProductEntity> orderedProductEntitiesList = Optional.ofNullable(order.getOrderedProducts())
+                .orElseGet(List::of);
+
+        final Map<UUID, OrderedProductEntity> orderedProductEntityMap =
+                orderedProductEntitiesList.stream()
+                        .collect(Collectors.toMap(ope -> ope.getCompositeKey().getProductId(), Function.identity()));
+
+        final List<OrderedProductEntity> orderedProductEntities = createOrderedProductList.stream().map(createOrderedProduct -> {
             final ProductEntity productEntity = productIdToProductEntityMap.get(createOrderedProduct.getId());
 
             if (productEntity.getQuantity() <= createOrderedProduct.getQuantity()) {
@@ -164,21 +170,17 @@ public class OrderServiceImpl implements OrderService {
             }
             productEntity.setQuantity(productEntity.getQuantity() - createOrderedProduct.getQuantity());
 
-            return OrderedProductEntity.builder()
-                    .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
-                    .quantity(createOrderedProduct.getQuantity())
-                    .price(productEntity.getPrice()).build();
-        }).collect(Collectors.groupingBy(o -> o.getCompositeKey().getProductId()));
+            return Optional.ofNullable(orderedProductEntityMap.get(createOrderedProduct.getId()))
+                    .map(ope -> {
+                        ope.setQuantity(ope.getQuantity() + createOrderedProduct.getQuantity());
+                        return ope;
+                    })
+                    .orElseGet(() -> OrderedProductEntity.builder()
+                            .compositeKey(new CompositeKey(order.getId(), createOrderedProduct.getId()))
+                            .quantity(createOrderedProduct.getQuantity())
+                            .price(productEntity.getPrice()).build());
 
-        if (orderedProductEntityList != null) {
-            orderedProductEntityList.forEach(o ->
-                    collect.entrySet().stream()
-                            .filter(k -> o.getCompositeKey().getProductId().equals(k.getKey()))
-                            .map(Map.Entry::getValue).forEach(op ->
-                                    op.forEach(e -> e.setQuantity(o.getQuantity() + e.getQuantity()))));
-        }
-
-        final List<OrderedProductEntity> orderedProductEntities = collect.values().stream().flatMap(Collection::stream).toList();
+        }).toList();
 
         orderedProductEntityRepository.saveAll(orderedProductEntities);
         order.setOrderPrice(calculateTotalPrice(orderedProductEntities));
