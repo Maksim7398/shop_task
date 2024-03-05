@@ -45,7 +45,7 @@ public class OrderEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id",referencedColumnName = "id")
     private List<OrderedProductEntity> orderedProducts;
 
@@ -54,4 +54,7 @@ public class OrderEntity {
 
     @Column(name = "create_date")
     private LocalDateTime createDate;
+
+    @Column(name = "update_date")
+    private LocalDateTime updateDate;
 }

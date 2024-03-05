@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -15,15 +16,15 @@ public interface OrderRepository extends JpaRepository<OrderEntity, UUID>, JpaSp
 
     List<OrderEntity> findOrdersByUserId(UUID userId);
 
-    @Query("SELECT new com.example.shop.model.OrderProductDto(op.compositeKey.productId, p.description,op.quantity,op.price) "  +
-            "from   OrderedProductEntity op "  +
+    @Query("SELECT new com.example.shop.model.OrderProductDto(op.compositeKey.productId, p.description,op.quantity,op.price) " +
+            "from   OrderedProductEntity op " +
             "join  ProductEntity  p  ON p.id = op.compositeKey.productId " +
             "join OrderEntity o ON o.id = op.compositeKey.orderId " +
             "WHERE  op.compositeKey.orderId = :orderId AND o.user.id = :userId")
     List<OrderProductDto> findProductsByOrderId(UUID userId, UUID orderId);
 
     @Query("from OrderEntity o " +
-            "join OrderedProductEntity op ON op.compositeKey.orderId = o.id " +
-            "where op.compositeKey.productId = :productId")
-    List<OrderEntity> orderEntityListByProductId(UUID productId);
+            "left join fetch o.orderedProducts " +
+            "where o.id = :orderId")
+    Optional<OrderEntity> findByIdFetchOrderedProducts(UUID orderId);
 }
