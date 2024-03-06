@@ -1,7 +1,7 @@
 package com.example.shop.event.service;
 
-import com.example.shop.controller.event.controller.request.EventSource;
-import com.example.shop.event.service.handle.EventHandler;
+import com.example.shop.controller.event.controller.events.EventSource;
+import com.example.shop.event.service.handlers.EventHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

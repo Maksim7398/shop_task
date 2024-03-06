@@ -1,7 +1,7 @@
-package com.example.shop.event.service.handle;
+package com.example.shop.event.service.handlers;
 
-import com.example.shop.controller.event.controller.request.Event;
-import com.example.shop.controller.event.controller.request.EventSource;
+import com.example.shop.controller.event.controller.events.Event;
+import com.example.shop.controller.event.controller.events.EventSource;
 import com.example.shop.controller.event.controller.request.OrderUpdateStatusEventData;
 import com.example.shop.model.Status;
 import com.example.shop.service.order.OrderService;

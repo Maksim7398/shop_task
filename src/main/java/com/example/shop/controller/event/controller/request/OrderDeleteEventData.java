@@ -7,15 +7,13 @@ import lombok.Builder;
 import lombok.Data;
 import org.springframework.validation.annotation.Validated;
 
-
 @Data
 @Builder
 @Validated
-public class OrderCreateEventData implements HttpEvent {
-
+public class OrderDeleteEventData implements HttpEvent {
     @Override
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)//позволяет скрыть поле от серелизации, десерилизация останется доступной
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Event getEvent() {
-        return Event.CREATE_ORDER;
+        return Event.DELETE_ORDER;
     }
 }

@@ -1,6 +1,6 @@
-package com.example.shop.event.service.handle;
+package com.example.shop.event.service.handlers;
 
-import com.example.shop.controller.event.controller.request.EventSource;
+import com.example.shop.controller.event.controller.events.EventSource;
 
 public interface EventHandler< T extends EventSource> {
 

@@ -1,6 +1,6 @@
 package com.example.shop.controller.event.controller;
 
-import com.example.shop.controller.event.controller.request.HttpEvent;
+import com.example.shop.controller.event.controller.events.HttpEvent;
 import com.example.shop.event.service.ProcessService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
