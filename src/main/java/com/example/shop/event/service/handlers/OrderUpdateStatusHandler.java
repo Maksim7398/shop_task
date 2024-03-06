@@ -3,12 +3,9 @@ package com.example.shop.event.service.handlers;
 import com.example.shop.controller.event.controller.events.Event;
 import com.example.shop.controller.event.controller.events.EventSource;
 import com.example.shop.controller.event.controller.request.OrderUpdateStatusEventData;
-import com.example.shop.model.Status;
 import com.example.shop.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +20,6 @@ public class OrderUpdateStatusHandler implements EventHandler<OrderUpdateStatusE
 
     @Override
     public String handleEvent(OrderUpdateStatusEventData eventSource) {
-        return orderService.updateStatus(UUID.fromString("c284a37f-bc06-43fa-a1d9-d50ce033ea11"), Status.REJECTED);
+        return orderService.updateStatus(eventSource.getOrderId(),eventSource.getStatus());
     }
 }

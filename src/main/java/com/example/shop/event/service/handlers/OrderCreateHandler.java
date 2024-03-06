@@ -4,12 +4,10 @@ import com.example.shop.controller.event.controller.events.Event;
 import com.example.shop.controller.event.controller.events.EventSource;
 import com.example.shop.controller.event.controller.request.OrderCreateEventData;
 import com.example.shop.controller.request.CreateOrderRequest;
-import com.example.shop.controller.request.CreateOrderedProduct;
 import com.example.shop.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
 
 @Component
@@ -26,14 +24,7 @@ public class OrderCreateHandler implements EventHandler<OrderCreateEventData> {
     @Override
     public String handleEvent(OrderCreateEventData eventSource) {
         final UUID save = orderService
-            .save(CreateOrderRequest.builder()
-                .products(List.of(
-                        CreateOrderedProduct.builder()
-                                .id(UUID.fromString("4b30bf06-bf20-49b7-8621-bbf281149517"))
-                                .quantity(5)
-                                .build())).build(),
-                        UUID.fromString("ad278799-dc7a-4ecf-8940-de621d2b7371")
-                );
+            .save(CreateOrderRequest.builder().products(eventSource.getProducts()).build(),eventSource.getUserID());
 
         return save.toString();
     }

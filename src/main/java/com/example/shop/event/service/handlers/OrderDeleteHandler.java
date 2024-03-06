@@ -7,8 +7,6 @@ import com.example.shop.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.UUID;
-
 @Component
 @RequiredArgsConstructor
 public class OrderDeleteHandler implements EventHandler<OrderDeleteEventData> {
@@ -22,6 +20,6 @@ public class OrderDeleteHandler implements EventHandler<OrderDeleteEventData> {
 
     @Override
     public String handleEvent(OrderDeleteEventData eventSource) {
-        return String.valueOf(orderService.deleteOrder(UUID.fromString("6f7e02b2-8544-48dc-97b2-41349744a0d2")));
+        return String.valueOf(orderService.deleteOrder(eventSource.getOrderId()));
     }
 }
