@@ -3,6 +3,9 @@ server:
     context-path: /my-app
   port: 8085
 spring:
+  kafka:
+    bootstrapAddress: localhost:9090
+    groupId: group1
   servlet:
     multipart:
       max-file-size: 10MB
@@ -29,6 +32,8 @@ logging:
     org.springframework: INFO
     com.example.shop: DEBUG
 app:
+  kafka:
+    enabled: true
   scheduling:
     enabled: false
     period: 10000
@@ -43,6 +48,7 @@ app:
 service:
   path:
     url: http://localhost:8080/my-app
+
 
 #      docker run -p 8888:8085 -e DATABASE_URL=jdbc:postgresql://host.docker.internal first-service
 
