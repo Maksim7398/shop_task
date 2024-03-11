@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class ProcessServiceImpl implements ProcessService {
+public class OrderEventServiceImpl implements OrderEventService {
 
     private final Set<EventHandler<EventSource>> eventHandlers;
 

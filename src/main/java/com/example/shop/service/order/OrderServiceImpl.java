@@ -112,6 +112,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public UUID deleteOrder(UUID orderID) {
         final OrderEntity orderEntity = orderRepository.findByIdFetchOrderedProducts(orderID).orElseThrow(()
                 -> new OrderNotFoundException("такого заказа не существует"));
