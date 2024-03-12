@@ -25,7 +25,10 @@ public class KafkaProducerConfiguration {
     @Value("${spring.kafka.bootstrapAddress}")
     private String SERVER;
 
-    private ProducerFactory<String, byte[]> producerFactoryString() {// задаёт стратегию создания продюсера
+    @Value("${spring.kafka.topic}")
+    private String ORDER_TOPIC;
+
+    private ProducerFactory<String, byte[]> producerFactoryByteArray() {// задаёт стратегию создания продюсера
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,//в этом свойстве указываются адреса брокеров Kafka
@@ -36,11 +39,34 @@ public class KafkaProducerConfiguration {
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,//серилизация значения
                 ByteArraySerializer.class);
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG,1);// распределяет сообщения между partitions
+
         return new DefaultKafkaProducerFactory<>(configProps);
     }
 
     @Bean
-    public KafkaTemplate<String, byte[]> kafkaTemplateString() {//
+    public KafkaTemplate<String, byte[]> kafkaTemplateByteArray() {
+        return new KafkaTemplate<>(producerFactoryByteArray());
+    }
+
+    private ProducerFactory<String, String> producerFactoryString() {
+        Map<String, Object> configProps = new HashMap<>();
+        configProps.put(
+                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
+                SERVER);
+        configProps.put(
+                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        configProps.put(
+                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
+                StringSerializer.class);
+        configProps.put(ProducerConfig.BATCH_SIZE_CONFIG,1);
+
+        return new DefaultKafkaProducerFactory<>(configProps);
+    }
+
+    @Bean
+    public KafkaTemplate<String, String> kafkaTemplateString() {
         return new KafkaTemplate<>(producerFactoryString());
     }
 
@@ -54,7 +80,7 @@ public class KafkaProducerConfiguration {
     @Bean
     public NewTopic orderTopic() {// создание топика
         return TopicBuilder
-                .name("order_topic")
+                .name(ORDER_TOPIC)
                 .partitions(2)
                 .replicas(1)
                 .build();

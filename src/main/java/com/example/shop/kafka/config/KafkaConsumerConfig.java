@@ -24,15 +24,15 @@ public class KafkaConsumerConfig {
     @Value("${spring.kafka.bootstrapAddress}")
     private String SERVER;
     @Value("${spring.kafka.groupId}")
-    private String groupId;
-
+    private String groupId;//Свойство group-id определяет идентификатор группы потребителей.
+    // Для Kafka важно знать, какие сообщения были обработаны каким потребителем.
 
     private ConsumerFactory<String, byte[]> consumerFactoryString() {
         Map<String, Object> props = new HashMap<>();
         props.put(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
                 SERVER);
-        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");// earliest новая группа потребителей каждый раз будет начинатся сначала
         props.put(
                 ConsumerConfig.GROUP_ID_CONFIG,
                 groupId);
@@ -42,6 +42,7 @@ public class KafkaConsumerConfig {
         props.put(
                 ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
                 ByteArrayDeserializer.class);
+
         return new DefaultKafkaConsumerFactory<>(props);
     }
 

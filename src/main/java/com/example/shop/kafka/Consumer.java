@@ -35,6 +35,7 @@ public class Consumer {
                     .orElseThrow(() -> new RuntimeException("Handler for eventsource not found"))
                     .handleEvent(eventSource);
 
+            log.info("MESSAGE READING");
         } catch (IOException e) {
             log.error("Couldn't parse message: {}; exception: ", message, e);
         }
